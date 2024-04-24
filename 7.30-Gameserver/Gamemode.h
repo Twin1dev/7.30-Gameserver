@@ -75,7 +75,7 @@ namespace Gamemode
 					ULevelStreamingDynamic::GetDefaultObj()->LoadLevelInstanceBySoftObjectPtr(UWorld::GetWorld(), GetGameState()->CurrentPlaylistInfo.BasePlaylist->AdditionalLevels[i], {}, {}, &Success);
 				}
 
-				GetGameState()->MapInfo->SupplyDropInfoList[0]->SupplyDropClass = StaticLoadObject<UClass>("/Game/Athena/SupplyDrops/AthenaSupplyDrop_Holiday.AthenaSupplyDrop_Holiday_C")
+				GetGameState()->MapInfo->SupplyDropInfoList[0]->SupplyDropClass = StaticLoadObject<UClass>("/Game/Athena/SupplyDrops/AthenaSupplyDrop_Holiday.AthenaSupplyDrop_Holiday_C");
 
 				GetGameState()->OnRep_AdditionalPlaylistLevelsStreamed();
 				
