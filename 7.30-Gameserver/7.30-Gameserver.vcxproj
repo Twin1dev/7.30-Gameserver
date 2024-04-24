@@ -142,6 +142,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="SDK\SDK\Basic.cpp" />
+    <ClCompile Include="SDK\SDK\CoreUObject_functions.cpp" />
+    <ClCompile Include="SDK\SDK\Engine_functions.cpp" />
+    <ClCompile Include="SDK\SDK\FortniteGame_functions.cpp" />
+    <ClCompile Include="SDK\SDK\GameplayAbilities_functions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Abilities.h" />
@@ -150,7 +155,11 @@
     <ClInclude Include="Hooks.h" />
     <ClInclude Include="Includes.h" />
     <ClInclude Include="Inventory.h" />
+    <ClInclude Include="Net.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SDK\PropertyFixup.hpp" />
+    <ClInclude Include="SDK\SDK.hpp" />
+    <ClInclude Include="SDK\UnrealContainers.hpp" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

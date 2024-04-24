@@ -15,10 +15,31 @@
     <Filter Include="Game">
       <UniqueIdentifier>{c2641ed7-7e03-4694-a07b-b886148f3008}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SDK">
+      <UniqueIdentifier>{8700c78b-c91e-4094-846b-dd9eb3c86da2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDK\SDK">
+      <UniqueIdentifier>{7e456c19-d62b-440f-b8f5-2fbbd3a1ea2b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\SDK\Basic.cpp">
+      <Filter>SDK\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\SDK\CoreUObject_functions.cpp">
+      <Filter>SDK\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\SDK\FortniteGame_functions.cpp">
+      <Filter>SDK\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\SDK\Engine_functions.cpp">
+      <Filter>SDK\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\SDK\GameplayAbilities_functions.cpp">
+      <Filter>SDK\SDK</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -45,6 +66,18 @@
     </ClInclude>
     <ClInclude Include="Inventory.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\PropertyFixup.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\SDK.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\UnrealContainers.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Net.h">
+      <Filter>Server</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@
 
 #include "Inventory.h"
 #include "Abilities.h"
+#include "Net.h"
 
 #include "Gamemode.h"
 #include "Player.h"
