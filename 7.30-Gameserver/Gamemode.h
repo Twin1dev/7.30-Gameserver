@@ -75,22 +75,7 @@ namespace Gamemode
 					ULevelStreamingDynamic::GetDefaultObj()->LoadLevelInstanceBySoftObjectPtr(UWorld::GetWorld(), GetGameState()->CurrentPlaylistInfo.BasePlaylist->AdditionalLevels[i], {}, {}, &Success);
 				}
 
-				GetGameState()->MapInfo->SupplyDropInfoList[0]->SupplyDropClass = StaticLoadObject<UClass>("/Game/Athena/SupplyDrops/AthenaSupplyDrop_Holiday.AthenaSupplyDrop_Holiday_C");
-
-				//if (!Globals::bIsLateGame)
-				{
-					TArray<AActor*> VehicleSpawners;
-					UGameplayStatics::GetDefaultObj()->GetAllActorsOfClass(UWorld::GetWorld(), StaticFindObject<UClass>("/Script/FortniteGame.FortAthenaVehicleSpawner"), &VehicleSpawners);
-
-					for (size_t i = 0; i < VehicleSpawners.Num(); i++)
-					{
-						auto Vehicle = VehicleSpawners[i];
-
-						//SpawnActor<AFortAthenaVehicle>(Vehicle->K2_GetActorLocation(), Vehicle->K2_GetActorRotation(), nullptr, (AFortAthenaVehicle*)Vehicle->GetVhielcasdkj asdjasbda);
-					}
-
-					//VehicleSpawners.FreeArray();
-				}
+				GetGameState()->MapInfo->SupplyDropInfoList[0]->SupplyDropClass = StaticLoadObject<UClass>("/Game/Athena/SupplyDrops/AthenaSupplyDrop_Holiday.AthenaSupplyDrop_Holiday_C")
 
 				GetGameState()->OnRep_AdditionalPlaylistLevelsStreamed();
 				
