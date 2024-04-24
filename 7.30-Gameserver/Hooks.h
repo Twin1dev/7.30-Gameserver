@@ -9,6 +9,8 @@ namespace Hooks
 	{
 		CREATEHOOK(BaseAddress() + 0x2cbfc20, GetNetModeWorld, nullptr);
 
+		CREATEHOOK(BaseAddress() + 0xa59280, DispatchRequestHook, &DispatchRequest);
+
 		CREATEHOOK(BaseAddress() + 0x28b0d20, KickPlayerHook, &KickPlayer);
 
 		*(bool*)(BaseAddress() + 0x5a14019) = false; // GIsClient

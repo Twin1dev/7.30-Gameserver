@@ -68,7 +68,7 @@ namespace Gamemode
 				}
 				
 				LOG("Listening on Port 7777!");
-				SetConsoleTitleA("7.30 Gameserver | Listening on port 7777");
+				SetConsoleTitleA("7.30 Gameserver | Listening on Port 7777");
 			}
 
 			GetGameMode()->bWorldIsReady = true;

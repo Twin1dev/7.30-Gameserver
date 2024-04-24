@@ -24,6 +24,16 @@ inline bool (*InitListen)(UNetDriver* Driver, void* InNotify, FURL& LocalURL, bo
 inline void* (*SetWorld)(UNetDriver* NetDriver, UWorld* World);
 inline void (*ServerReplicateActors)(UReplicationDriver* ReplicationDriver);
 
+static __int64 (*DispatchRequest)(__int64, __int64*, int);
+
+static __int64 DispatchRequestHook(__int64 a1, __int64* a2, int a3)
+{
+    *(int*)(__int64(a2) + 0x28) = 3; // sets McpIsDedicatedServer
+
+    // 3 as a3 sets enabled, if we returned original a3, it would just set us as sparkle specialist lol
+    return DispatchRequest(a1, a2, 3);
+}
+
 void (*TickFlush)(UNetDriver*);
 void TickFlushHook(UNetDriver* NetDriver)
 {
