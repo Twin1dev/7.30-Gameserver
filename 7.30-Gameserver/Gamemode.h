@@ -66,16 +66,6 @@ namespace Gamemode
 				{
 					UWorld::GetWorld()->NetDriver->MaxClientRate = UWorld::GetWorld()->NetDriver->MaxInternetClientRate;
 				}
-
-				for (size_t i = 0; i < GetGameState()->CurrentPlaylistInfo.BasePlaylist->AdditionalLevels.Num(); i++)
-				{
-					GetGameState()->AdditionalPlaylistLevelsStreamed.Add(GetGameState()->CurrentPlaylistInfo.BasePlaylist->AdditionalLevels[i].ObjectID.AssetPathName);
-
-					bool Success = false;
-					ULevelStreamingDynamic::GetDefaultObj()->LoadLevelInstanceBySoftObjectPtr(UWorld::GetWorld(), GetGameState()->CurrentPlaylistInfo.BasePlaylist->AdditionalLevels[i], {}, {}, &Success);
-				}
-
-				GetGameState()->OnRep_AdditionalPlaylistLevelsStreamed();
 				
 				LOG("Listening on Port 7777!");
 				SetConsoleTitleA("7.30 Gameserver | Listening on port 7777");
