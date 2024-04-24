@@ -18,8 +18,7 @@ namespace Hooks
 		UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"open Athena_Terrain", nullptr);
 
 		MemoryUtils::NullFunction(BaseAddress() + 0x1014cc0); // changegamesession
-		MemoryUtils::NullFunction(BaseAddress() + 0x1414610);
-		MemoryUtils::NullFunction(BaseAddress() + 0x1014cc0);
+		MemoryUtils::NullFunction(MemoryUtils::SigScan("48 89 5C 24 ? 57 48 83 EC 30 48 8B 41 28 48 8B DA 48 8B F9 48 85 C0 74 34 48 8B 4B 08 48 8D")); // widget class
 
 		Player::HookAll();
 		Gamemode::HookAll();

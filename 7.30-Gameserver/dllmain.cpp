@@ -29,7 +29,7 @@ DWORD WINAPI Main(LPVOID)
 
     MH_Initialize();
 
-    Sleep(5000);
+    
 
     Hooks::StartServer();
 

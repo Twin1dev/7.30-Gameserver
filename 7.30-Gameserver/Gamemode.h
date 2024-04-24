@@ -83,7 +83,7 @@ namespace Gamemode
 				SetConsoleTitleA("7.30 Gameserver | Listening on port 7777");
 			}
 
-			GameMode->bWorldIsReady = true;
+			GetGameMode()->bWorldIsReady = true;
 		}
 
 		return ReadyToStartMatch(GameMode);
@@ -101,6 +101,8 @@ namespace Gamemode
 	void HookAll()
 	{
 		auto GameModeDefault = StaticFindObject<AFortGameModeAthena>("/Script/FortniteGame.Default__FortGameModeAthena");
+
+		LOG("Hooking gamemode");
 
 		VirtualHook(GameModeDefault->VTable, 251, ReadyToStartMatchHook, (PVOID*)&ReadyToStartMatch);
 		VirtualHook(GameModeDefault->VTable, 194, SpawnDefaultPawnForHook);
