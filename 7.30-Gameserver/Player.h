@@ -12,6 +12,8 @@ namespace Player
 
 		static void* (*ApplyCharacterCustomization)(AFortPlayerState* PlayerState, AFortPawn* Pawn) = decltype(ApplyCharacterCustomization)(BaseAddress() + 0x146b740);
 		
+		ApplyCharacterCustomization((AFortPlayerState*)Controller->PlayerState, Pawn);
+
 		Pawn->ForceNetUpdate();
 		Controller->PlayerState->ForceNetUpdate();
 		Controller->ForceNetUpdate();
