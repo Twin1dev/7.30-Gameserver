@@ -35,7 +35,7 @@ namespace Gamemode
 
 			GetGameState()->OnRep_CurrentPlaylistInfo();
 
-			CreateNetDriver = decltype(CreateNetDriver)(BaseAddress() + 0x2C53350);
+			CreateNetDriver = decltype(CreateNetDriver)(MemoryUtils::SigScan("48 89 5C 24 10 57 48 83 EC ? 48 8B 81 D0 0B 00 00"));
 			SetWorld = decltype(SetWorld)(BaseAddress() + 0x29cccc0);
 			InitListen = decltype(InitListen)(BaseAddress() + 0x458c90);
 
@@ -88,7 +88,7 @@ namespace Gamemode
 	{
 		auto GameModeDefault = StaticFindObject<AFortGameModeAthena>("/Script/FortniteGame.Default__FortGameModeAthena");
 
-		VirtualHook(GameModeDefault->VTable, 251, ReadyToStartMatchHook);
+		VirtualHook(GameModeDefault->VTable, 251, ReadyToStartMatchHook, (PVOID*)&ReadyToStartMatch);
 		VirtualHook(GameModeDefault->VTable, 194, SpawnDefaultPawnForHook);
 	}
 }

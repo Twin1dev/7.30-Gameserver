@@ -6320,61 +6320,56 @@ public:
 	uint8                                         Pad_A7[0x10];                                      // 0x0010(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 
-struct FFastArraySerializer
+struct alignas(0x08) FFastArraySerializer
 {
-	static inline bool bNewSerializer;
+public:
 
-	int& GetArrayReplicationKey()
+	/** Counter used to assign IDs to new elements. */
+	int32 IDCounter;
+
+	/** Counter used to track array replication. */
+	int32 ArrayReplicationKey;
+
+	// Cached item counts, used for fast sanity checking when writing.
+	int32 CachedNumItems;
+	int32 CachedNumItemsToConsiderForWriting;
+
+	uint8                                         Pad_A0[0xA0];                                      // 0x0000(0x00A0)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+	/** This must be called if you add or change an item in the array */
+	void MarkItemDirty(FFastArraySerializerItem& Item)
 	{
-		static int ArrayReplicationKeyOffset = 0x50 + 0x4;
-
-		return *(int*)(__int64(this) + ArrayReplicationKeyOffset);
-	}
-
-	int& GetIDCounter()
-	{
-		static int IDCounterOffset = 0x50;
-
-		return *(int*)(__int64(this) + IDCounterOffset);
-	}
-
-	int& GetCachedNumItems()
-	{
-		static int CachedNumItemsOffset = 0x50 + 0x8 + 0x50 + (bNewSerializer ? 0x50 : 0x0);
-
-		return *(int*)(__int64(this) + CachedNumItemsOffset);
-	}
-
-	int& GetCachedNumItemsToConsiderForWriting()
-	{
-		static int CachedNumItemsToConsiderForWritingOffset = 0x50 + 0x8 + 0x50 + 0x4 + (bNewSerializer ? 0x50 : 0x0);
-
-		return *(int*)(__int64(this) + CachedNumItemsToConsiderForWritingOffset);
-	}
-
-	void MarkItemDirty(FFastArraySerializerItem* Item)
-	{
-		if (Item->ReplicationID == -1)
+		if (Item.ReplicationID == -1)
 		{
-			Item->ReplicationID = ++GetIDCounter();
-
-			if (GetIDCounter() == -1)
-				GetIDCounter()++;
+			Item.ReplicationID = ++IDCounter;
+			if (IDCounter == -1)
+			{
+				IDCounter++;
+			}
 		}
 
-		Item->ReplicationKey++;
+		Item.ReplicationKey++;
 		MarkArrayDirty();
 	}
 
+	/** This must be called if you just remove something from the array */
 	void MarkArrayDirty()
 	{
-		GetArrayReplicationKey()++;
+		// ItemMap.Reset();        // This allows to clients to add predictive elements to arrays without affecting replication.
+		IncrementArrayReplicationKey();
 
-		if (GetArrayReplicationKey() == -1)
-			GetArrayReplicationKey()++;
+		// Invalidate the cached item counts so that they're recomputed during the next write
+		CachedNumItems = -1;
+		CachedNumItemsToConsiderForWriting = -1;
+	}
 
-		GetCachedNumItems() = -1;
-		GetCachedNumItemsToConsiderForWriting() = -1;
+	void IncrementArrayReplicationKey()
+	{
+		ArrayReplicationKey++;
+		if (ArrayReplicationKey == -1)
+		{
+			ArrayReplicationKey++;
+		}
 	}
 };
 
