@@ -55,7 +55,9 @@ namespace Gamemode
 
 				ServerReplicateActors = decltype(ServerReplicateActors)(UWorld::GetWorld()->NetDriver->ReplicationDriver->VTable[0x56]);
 
-				GetGameMode()->GameSession->MaxPlayers = 100;
+				GameMode->GameSession->MaxPlayers = Playlist->MaxPlayers;
+				GetGameState()->AirCraftBehavior = Playlist->AirCraftBehavior;
+				GetGameState()->bIsLargeTeamGame = Playlist->bIsLargeTeamGame;
 
 				UWorld::GetWorld()->LevelCollections[0].NetDriver = UWorld::GetWorld()->NetDriver;
 				UWorld::GetWorld()->LevelCollections[1].NetDriver = UWorld::GetWorld()->NetDriver;
@@ -64,12 +66,39 @@ namespace Gamemode
 				{
 					UWorld::GetWorld()->NetDriver->MaxClientRate = UWorld::GetWorld()->NetDriver->MaxInternetClientRate;
 				}
+
+				for (size_t i = 0; i < GetGameState()->CurrentPlaylistInfo.BasePlaylist->AdditionalLevels.Num(); i++)
+				{
+					GetGameState()->AdditionalPlaylistLevelsStreamed.Add(GetGameState()->CurrentPlaylistInfo.BasePlaylist->AdditionalLevels[i].ObjectID.AssetPathName);
+
+					bool Success = false;
+					ULevelStreamingDynamic::GetDefaultObj()->LoadLevelInstanceBySoftObjectPtr(UWorld::GetWorld(), GetGameState()->CurrentPlaylistInfo.BasePlaylist->AdditionalLevels[i], {}, {}, &Success);
+				}
+
+				GetGameState()->MapInfo->SupplyDropInfoList[0]->SupplyDropClass = StaticLoadObject<UClass>("/Game/Athena/SupplyDrops/AthenaSupplyDrop_Holiday.AthenaSupplyDrop_Holiday_C");
+
+				//if (!Globals::bIsLateGame)
+				{
+					TArray<AActor*> VehicleSpawners;
+					UGameplayStatics::GetDefaultObj()->GetAllActorsOfClass(UWorld::GetWorld(), StaticFindObject<UClass>("/Script/FortniteGame.FortAthenaVehicleSpawner"), &VehicleSpawners);
+
+					for (size_t i = 0; i < VehicleSpawners.Num(); i++)
+					{
+						auto Vehicle = VehicleSpawners[i];
+
+						//SpawnActor<AFortAthenaVehicle>(Vehicle->K2_GetActorLocation(), Vehicle->K2_GetActorRotation(), nullptr, (AFortAthenaVehicle*)Vehicle->GetVhielcasdkj asdjasbda);
+					}
+
+					//VehicleSpawners.FreeArray();
+				}
+
+				GetGameState()->OnRep_AdditionalPlaylistLevelsStreamed();
 				
 				LOG("Listening on Port 7777!");
 				SetConsoleTitleA("7.30 Gameserver | Listening on port 7777");
 			}
 
-			GetGameMode()->bWorldIsReady = true;
+			GameMode->bWorldIsReady = true;
 		}
 
 		return ReadyToStartMatch(GameMode);
