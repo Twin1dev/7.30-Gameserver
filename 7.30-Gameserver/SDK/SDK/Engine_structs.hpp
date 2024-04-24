@@ -6320,12 +6320,62 @@ public:
 	uint8                                         Pad_A7[0x10];                                      // 0x0010(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 
-// ScriptStruct Engine.FastArraySerializer
-// 0x00B0 (0x00B0 - 0x0000)
-struct alignas(0x08) FFastArraySerializer
+struct FFastArraySerializer
 {
-public:
-	uint8                                         Pad_A8[0xB0];                                      // 0x0000(0x00B0)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	static inline bool bNewSerializer;
+
+	int& GetArrayReplicationKey()
+	{
+		static int ArrayReplicationKeyOffset = 0x50 + 0x4;
+
+		return *(int*)(__int64(this) + ArrayReplicationKeyOffset);
+	}
+
+	int& GetIDCounter()
+	{
+		static int IDCounterOffset = 0x50;
+
+		return *(int*)(__int64(this) + IDCounterOffset);
+	}
+
+	int& GetCachedNumItems()
+	{
+		static int CachedNumItemsOffset = 0x50 + 0x8 + 0x50 + (bNewSerializer ? 0x50 : 0x0);
+
+		return *(int*)(__int64(this) + CachedNumItemsOffset);
+	}
+
+	int& GetCachedNumItemsToConsiderForWriting()
+	{
+		static int CachedNumItemsToConsiderForWritingOffset = 0x50 + 0x8 + 0x50 + 0x4 + (bNewSerializer ? 0x50 : 0x0);
+
+		return *(int*)(__int64(this) + CachedNumItemsToConsiderForWritingOffset);
+	}
+
+	void MarkItemDirty(FFastArraySerializerItem* Item)
+	{
+		if (Item->ReplicationID == -1)
+		{
+			Item->ReplicationID = ++GetIDCounter();
+
+			if (GetIDCounter() == -1)
+				GetIDCounter()++;
+		}
+
+		Item->ReplicationKey++;
+		MarkArrayDirty();
+	}
+
+	void MarkArrayDirty()
+	{
+		GetArrayReplicationKey()++;
+
+		if (GetArrayReplicationKey() == -1)
+			GetArrayReplicationKey()++;
+
+		GetCachedNumItems() = -1;
+		GetCachedNumItemsToConsiderForWriting() = -1;
+	}
 };
 
 // ScriptStruct Engine.UniqueNetIdRepl

@@ -13,6 +13,10 @@
 
 #define CONSOLE
 
+/*
+    all in headers for vxztys autism :blush:
+*/
+
 DWORD WINAPI Main(LPVOID)
 {
 #ifdef CONSOLE
