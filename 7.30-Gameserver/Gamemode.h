@@ -75,8 +75,6 @@ namespace Gamemode
 					ULevelStreamingDynamic::GetDefaultObj()->LoadLevelInstanceBySoftObjectPtr(UWorld::GetWorld(), GetGameState()->CurrentPlaylistInfo.BasePlaylist->AdditionalLevels[i], {}, {}, &Success);
 				}
 
-				GetGameState()->MapInfo->SupplyDropInfoList[0]->SupplyDropClass = StaticLoadObject<UClass>("/Game/Athena/SupplyDrops/AthenaSupplyDrop_Holiday.AthenaSupplyDrop_Holiday_C");
-
 				GetGameState()->OnRep_AdditionalPlaylistLevelsStreamed();
 				
 				LOG("Listening on Port 7777!");
@@ -84,6 +82,17 @@ namespace Gamemode
 			}
 
 			GetGameMode()->bWorldIsReady = true;
+		}
+
+		static bool bSetMapInfo = false;
+
+		if (GetGameState()->MapInfo)
+		{
+			if (!bSetMapInfo)
+			{
+				bSetMapInfo = true;
+				GetGameState()->MapInfo->SupplyDropInfoList[0]->SupplyDropClass = StaticLoadObject<UClass>("/Game/Athena/SupplyDrops/AthenaSupplyDrop_Holiday.AthenaSupplyDrop_Holiday_C");
+			}
 		}
 
 		return ReadyToStartMatch(GameMode);
