@@ -28,6 +28,7 @@ namespace Inventory
 		// buh?
 		PC->WorldInventory->bRequiresLocalUpdate = true;
 		PC->WorldInventory->HandleInventoryLocalUpdate();
+		PC->WorldInventory->ForceNetUpdate();
 
 		if (bMark)
 			PC->WorldInventory->Inventory.MarkArrayDirty();

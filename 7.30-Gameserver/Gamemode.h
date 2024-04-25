@@ -94,8 +94,6 @@ namespace Gamemode
 
 		auto NewPawn = GameMode->SpawnDefaultPawnAtTransform(NewPlayer, Transform);
 
-		Inventory::GivePCItem((AFortPlayerController*)NewPlayer, ((AFortPlayerControllerAthena*)NewPlayer)->CustomizationLoadout.Pickaxe->WeaponDefinition, 1);
-
 		for (int i = 0; i < GetGameMode()->StartingItems.Num(); i++)
 		{
 			auto NewItem = GetGameMode()->StartingItems[i];

@@ -1,8 +1,6 @@
 #pragma once
 
 // Dumped with Dumper-7!
-
-
 namespace SDK
 {
 //---------------------------------------------------------------------------------------------------------------------
@@ -4090,44 +4088,48 @@ struct FVector_NetQuantize100 : public FVector
 public:
 };
 
-// 0xB0 (0xB0 - 0x0)
-// ScriptStruct Engine.FastArraySerializer
-struct alignas(0x08) FFastArraySerializer
+struct FFastArraySerializer2
 {
 public:
+	uint8                                        Pad_24DD[0xB0];                                    // Fixing Size Of Struct [ Dumper-7 ]
+};
 
-	/** Counter used to assign IDs to new elements. */
+struct FFastArraySerializerGuidReferences
+{
+	TSet<unsigned int> UnmappedGUIDs; // List of guids that were unmapped so we can quickly check
+	TSet<unsigned int> MappedDynamicGUIDs; // List of guids that were mapped so we can move them to unmapped when necessary (i.e. actor channel closes)
+	TArray<uint8> Buffer; // Buffer of data to re-serialize when the guids are mapped
+	int32 NumBufferBits; // Number of bits in the buffer
+};
+
+// ScriptStruct Engine.FastArraySerializer
+// 0x00B0
+struct FFastArraySerializer
+{
+	TMap<int32, int32> ItemMap;
 	int32 IDCounter;
-
-	/** Counter used to track array replication. */
 	int32 ArrayReplicationKey;
 
-	// Cached item counts, used for fast sanity checking when writing.
+	TMap<int32, FFastArraySerializerGuidReferences> GuidReferencesMap; // List of items that need to be re-serialized when the referenced objects are mapped
 	int32 CachedNumItems;
 	int32 CachedNumItemsToConsiderForWriting;
 
-	uint8                                         Pad_A0[0xA0];                                      // 0x0000(0x00A0)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-	/** This must be called if you add or change an item in the array */
 	void MarkItemDirty(FFastArraySerializerItem& Item)
 	{
 		if (Item.ReplicationID == -1)
 		{
 			Item.ReplicationID = ++IDCounter;
 			if (IDCounter == -1)
-			{
 				IDCounter++;
-			}
 		}
 
 		Item.ReplicationKey++;
 		MarkArrayDirty();
 	}
 
-	/** This must be called if you just remove something from the array */
 	void MarkArrayDirty()
 	{
-		// ItemMap.Reset();        // This allows to clients to add predictive elements to arrays without affecting replication.
+		//ItemMap.();		// This allows to clients to add predictive elements to arrays without affecting replication.
 		IncrementArrayReplicationKey();
 
 		// Invalidate the cached item counts so that they're recomputed during the next write
@@ -4139,9 +4141,7 @@ public:
 	{
 		ArrayReplicationKey++;
 		if (ArrayReplicationKey == -1)
-		{
 			ArrayReplicationKey++;
-		}
 	}
 };
 // 0x27 (0x28 - 0x1)

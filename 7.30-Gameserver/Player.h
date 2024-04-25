@@ -31,6 +31,9 @@ namespace Player
 		Controller->PlayerState->ForceNetUpdate();
 		Controller->ForceNetUpdate();
 
+		Inventory::GivePCItem(Controller, ((AFortPlayerControllerAthena*)Controller)->CustomizationLoadout.Pickaxe->WeaponDefinition, 1);
+		Inventory::Update(Controller);
+
 		return ServerLoadingScreenDropped(Controller);
 	}
 

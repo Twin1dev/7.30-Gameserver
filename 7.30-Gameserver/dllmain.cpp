@@ -29,7 +29,7 @@ DWORD WINAPI Main(LPVOID)
 
     MH_Initialize();
 
-    
+    InitGObjects();
 
     Hooks::StartServer();
 
