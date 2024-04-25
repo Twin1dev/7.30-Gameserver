@@ -2,7 +2,7 @@
 
 this gameserver includes various features such as the following:
 siphon animation
-\nfull snow map
+full snow map
 quests
 deimos zombies
 proper reservations (i will figure this out)
