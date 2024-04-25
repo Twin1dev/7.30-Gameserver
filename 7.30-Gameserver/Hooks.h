@@ -15,9 +15,9 @@ namespace Hooks
 
 		*(bool*)(BaseAddress() + 0x5a14019) = false; // GIsClient
 
-		UFortEngine::GetEngine()->GameInstance->LocalPlayers.Remove(0);
+		((UFortEngine*)UFortEngine::GetEngine())->GameInstance->LocalPlayers.Remove(0);
 
-		UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"open Athena_Terrain", nullptr);
+		UKismetSystemLibrary::GetDefaultObj()->ExecuteConsoleCommand(UWorld::GetWorld(), L"open Athena_Terrain", nullptr);
 
 		MemoryUtils::NullFunction(BaseAddress() + 0x1014cc0); // changegamesession
 		MemoryUtils::NullFunction(MemoryUtils::SigScan("48 89 5C 24 ? 57 48 83 EC 30 48 8B 41 28 48 8B DA 48 8B F9 48 85 C0 74 34 48 8B 4B 08 48 8D")); // widget class

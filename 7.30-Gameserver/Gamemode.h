@@ -7,11 +7,11 @@ namespace Gamemode
 	bool ReadyToStartMatchHook(AFortGameModeAthena* GameMode)
 	{
 		TArray<AActor*> WarmupActors;
-		UGameplayStatics::GetAllActorsOfClass(UWorld::GetWorld(), AFortPlayerStartWarmup::StaticClass(), &WarmupActors);
+		UGameplayStatics::GetDefaultObj()->GetAllActorsOfClass(UWorld::GetWorld(), AFortPlayerStartWarmup::StaticClass(), &WarmupActors);
 
 		int WarmupSpots = WarmupActors.Num();
 
-		WarmupActors.Clear();
+		WarmupActors.Free();
 
 		if (WarmupSpots == 0)
 		{
@@ -53,7 +53,7 @@ namespace Gamemode
 				InitListen(UWorld::GetWorld()->NetDriver, UWorld::GetWorld(), URL, true, Err);
 				SetWorld(UWorld::GetWorld()->NetDriver, UWorld::GetWorld());
 
-				ServerReplicateActors = decltype(ServerReplicateActors)(UWorld::GetWorld()->NetDriver->ReplicationDriver->VTable[0x56]);
+				ServerReplicateActors = decltype(ServerReplicateActors)(UWorld::GetWorld()->NetDriver->ReplicationDriver->Vft[0x56]);
 
 				GameMode->GameSession->MaxPlayers = Playlist->MaxPlayers;
 				GetGameState()->AirCraftBehavior = Playlist->AirCraftBehavior;
@@ -94,6 +94,22 @@ namespace Gamemode
 
 		auto NewPawn = GameMode->SpawnDefaultPawnAtTransform(NewPlayer, Transform);
 
+		Inventory::GivePCItem((AFortPlayerController*)NewPlayer, ((AFortPlayerControllerAthena*)NewPlayer)->CustomizationLoadout.Pickaxe->WeaponDefinition, 1);
+
+		for (int i = 0; i < GetGameMode()->StartingItems.Num(); i++)
+		{
+			auto NewItem = GetGameMode()->StartingItems[i];
+
+			if (!NewItem.Item)
+				continue;
+
+			Inventory::GivePCItem((AFortPlayerController*)NewPlayer, NewItem.Item, NewItem.Count);
+		}
+
+		Inventory::Update((AFortPlayerController*)NewPlayer);
+
+		Abilities::ApplySetToASC(((AFortPlayerState*)NewPlayer->PlayerState)->AbilitySystemComponent);
+
 		return NewPawn;
 	}
 
@@ -103,7 +119,7 @@ namespace Gamemode
 
 		LOG("Hooking gamemode");
 
-		VirtualHook(GameModeDefault->VTable, 251, ReadyToStartMatchHook, (PVOID*)&ReadyToStartMatch);
-		VirtualHook(GameModeDefault->VTable, 194, SpawnDefaultPawnForHook);
+		VirtualHook(GameModeDefault->Vft, 251, ReadyToStartMatchHook, (PVOID*)&ReadyToStartMatch);
+		VirtualHook(GameModeDefault->Vft, 194, SpawnDefaultPawnForHook);
 	}
 }

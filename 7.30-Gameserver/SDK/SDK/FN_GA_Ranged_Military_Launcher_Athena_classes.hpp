@@ -1,0 +1,25 @@
+#pragma once
+
+// Dumped with Dumper-7!
+
+
+namespace SDK
+{
+//---------------------------------------------------------------------------------------------------------------------
+// CLASSES
+//---------------------------------------------------------------------------------------------------------------------
+
+// 0x0 (0x979 - 0x979)
+// BlueprintGeneratedClass GA_Ranged_Military_Launcher_Athena.GA_Ranged_Military_Launcher_Athena_C
+class UGA_Ranged_Military_Launcher_Athena_C : public UGA_Ranged_GenericProjectileExplosive_Athena_C
+{
+public:
+
+	static class UClass* StaticClass();
+	static class UGA_Ranged_Military_Launcher_Athena_C* GetDefaultObj();
+
+};
+
+}
+
+

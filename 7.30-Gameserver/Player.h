@@ -2,6 +2,19 @@
 
 namespace Player
 {
+	void ServerAcknowlegePossessionHook(APlayerController* Controller, APawn* Pawn)
+	{
+		Controller->AcknowledgedPawn = Pawn;
+
+		static void* (*ApplyCharacterCustomization)(AFortPlayerState * PlayerState, AFortPawn * Pawn) = decltype(ApplyCharacterCustomization)(BaseAddress() + 0x146b740);
+
+		ApplyCharacterCustomization((AFortPlayerState*)Controller->PlayerState, (AFortPawn*)Pawn);
+
+		Pawn->ForceNetUpdate();
+		Controller->PlayerState->ForceNetUpdate();
+		Controller->ForceNetUpdate();
+	}
+
 	void (*ServerLoadingScreenDropped)(AFortPlayerController*);
 	void ServerLoadingScreenDroppedHook(AFortPlayerController* Controller)
 	{
@@ -25,6 +38,8 @@ namespace Player
 	{
 		auto PlayerControllerDefault = AFortPlayerControllerAthena::GetDefaultObj();
 
-		VirtualHook(PlayerControllerDefault->VTable, 597, ServerLoadingScreenDroppedHook, (PVOID*)&ServerLoadingScreenDropped);
+		VirtualHook(PlayerControllerDefault->Vft, 597, ServerLoadingScreenDroppedHook, (PVOID*)&ServerLoadingScreenDropped);
+		VirtualHook(PlayerControllerDefault->Vft, 261, ServerAcknowlegePossessionHook);
+
 	}
 }
