@@ -1,4 +1,5 @@
 #pragma once
+#include <format>
 
 namespace MemoryUtils {
 	uintptr_t SigScan(const char* signature, bool bRelative = false, uint32_t offset = 0) {

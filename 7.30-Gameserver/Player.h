@@ -17,20 +17,21 @@ namespace Player
 		Controller->ForceNetUpdate();
 	}
 
-	void (*ServerLoadingScreenDropped)(AFortPlayerController*);
-	void ServerLoadingScreenDroppedHook(AFortPlayerController* Controller)
+	void (*ServerLoadingScreenDropped)(AFortPlayerControllerAthena*);
+	void ServerLoadingScreenDroppedHook(AFortPlayerControllerAthena* Controller)
 	{
 		auto Pawn = (AFortPlayerPawn*)Controller->Pawn;
+		auto PlayerState = (AFortPlayerState*)Controller->PlayerState;
 
 		if (!Pawn || GetGameState()->GamePhase == EAthenaGamePhase::Aircraft)
 			return ServerLoadingScreenDropped(Controller);
 
-		static void* (*ApplyCharacterCustomization)(AFortPlayerState* PlayerState, AFortPawn* Pawn) = decltype(ApplyCharacterCustomization)(BaseAddress() + 0x146b740);
-		
+		static void* (*ApplyCharacterCustomization)(AFortPlayerState * PlayerState, AFortPawn * Pawn) = decltype(ApplyCharacterCustomization)(BaseAddress() + 0x146b740);
+
 		ApplyCharacterCustomization((AFortPlayerState*)Controller->PlayerState, Pawn);
 
 		Pawn->ForceNetUpdate();
-		Controller->PlayerState->ForceNetUpdate();
+		PlayerState->ForceNetUpdate();
 		Controller->ForceNetUpdate();
 
 		Inventory::GivePCItem(Controller, ((AFortPlayerControllerAthena*)Controller)->CustomizationLoadout.Pickaxe->WeaponDefinition, 1);
@@ -45,6 +46,14 @@ namespace Player
 			GameUtils::Snow::SetSnow();
 		}
 
+		Controller->GetQuestManager(ESubGame::Athena)->bBlockStWQuestCompletion = true;
+
+		if (!Controller->MatchReport)
+			Controller->MatchReport = (UAthenaPlayerMatchReport*)UGameplayStatics::GetDefaultObj()->SpawnObject(UAthenaPlayerMatchReport::StaticClass(), Controller);
+
+		Controller->MatchReport->bHasMatchStats = true;
+		Controller->MatchReport->bHasTeamStats = true;
+		Controller->MatchReport->bHasRewards = true;
 
 		return ServerLoadingScreenDropped(Controller);
 	}
