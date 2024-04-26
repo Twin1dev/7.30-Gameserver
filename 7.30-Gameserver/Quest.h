@@ -5,10 +5,66 @@
 class Quests
 {
 private:
-	static void CompleteQuest(AFortPlayerControllerAthena* PlayerController, UFortQuestItemDefinition* QuestDefinition, FName BackendName)
+	static void UpdateStat(AFortPlayerControllerAthena* Controller, FName BackendName, UFortQuestItemDefinition* QuestDefinition, int CurrentStage)
+	{
+		bool bFound = false;
+
+		for (int i = 0; i < Controller->UpdatedObjectiveStats.Num(); i++)
+		{
+			if (Controller->UpdatedObjectiveStats[i].BackendName.ComparisonIndex == BackendName.ComparisonIndex)
+			{
+				bFound = true;
+
+				auto UpdatedObjectiveStats = Controller->UpdatedObjectiveStats[i];
+				UpdatedObjectiveStats.BackendName = BackendName;
+				UpdatedObjectiveStats.Quest = QuestDefinition;
+				break;
+			}
+		}
+
+		if (!bFound)
+		{
+			FFortUpdatedObjectiveStat Stat{};
+			Stat.BackendName = BackendName;
+			Stat.Quest = QuestDefinition;
+			Controller->UpdatedObjectiveStats.Add(Stat);
+		}
+		
+	}
+	static void CompleteQuest(AFortPlayerControllerAthena* Controller, UFortQuestItemDefinition* QuestDefinition, FName BackendName/*, UObject* TargetObject*/)
 	{
 		if (!QuestDefinition)
 			return;
+
+		auto Quest = Controller->GetQuestManager(ESubGame::Athena)->GetQuestWithDefinition(QuestDefinition);
+
+		for (int i = 0; i < Quest->Objectives.Num(); i++)
+		{
+			auto Objective = Quest->Objectives[i];
+
+			if (Objective->BackendName.ComparisonIndex == BackendName.ComparisonIndex)
+			{
+				bool bCompletedObjective = Objective->AchievedCount + 1 == Objective->RequiredCount;
+				bool bQuestCompleted = bCompletedObjective && Quest->GetNumObjectivesComplete() == Quest->Objectives.Num() - 1;
+
+				//Controller->GetQuestManager(ESubGame::Athena)->SendComplexCustomStatEvent(Quest, )
+
+				UpdateStat(Controller, BackendName, QuestDefinition, Objective->AchievedCount);
+
+				if (bQuestCompleted)
+				{
+					Controller->GetQuestManager(ESubGame::Athena)->ClaimQuestReward(Quest);
+					LOG("Completed again");
+				}
+			}
+			else
+			{
+				LOG("Invalid2");
+			}
+			break;
+		}
+
+		LOG("Quest updated!");
 	}
 public:
 	static void HandleEvent(AFortPlayerControllerAthena* Controller, EFortQuestObjectiveStatEvent StatEvent, EFortQuestObjectiveItemEvent ItemEvent, UObject* Source, UObject* Target)
@@ -32,15 +88,105 @@ public:
 				if (ItemEvent != EFortQuestObjectiveItemEvent::Max_None && Objective.ItemEvent == ItemEvent)
 				{
 					CompleteQuest(Controller, QuestDefinition, Objective.BackendName);
+					LOG("Quest completed properly!");
 					return;
 				}
 
 				auto DataTable = Objective.ObjectiveStatHandle.DataTable;
 
-				auto RowMap = *(UE::TMap<FName, uint8_t*>*)(__int64(DataTable) + 0x30);
+				auto RowMap = *(UE::TMap<FName, FFortQuestObjectiveStatTableRow*>*)(__int64(DataTable) + 0x30);
 
-				for (int z = 0; z < RowMap.)
+				for (int z = 0; z < RowMap.Pairs.Elements.Data.Num(); z++)
+				{
+					auto& Value = RowMap.Pairs.Elements.Data[z].ElementData.Value;
 
+					if (!Value.Second)
+						continue;
+
+					if (Objective.ObjectiveStatHandle.RowName.ComparisonIndex == Value.First.ComparisonIndex)
+					{
+						if (!QuestDefinition->Objectives.IsValidIndex(c - 1) || QuestManager->HasCompletedObjectiveWithName(QuestDefinition, QuestDefinition->Objectives[c - 1].BackendName))
+						{
+							auto& Condition = Value.Second->Condition;
+							auto& SourceTags = Value.Second->SourceTagContainer.GameplayTags;
+							auto& TargetTags = Value.Second->TargetTagContainer.GameplayTags;
+							auto Type = Value.Second->Type;
+
+							if (Type == StatEvent)
+							{
+								switch (StatEvent)
+								{
+								case EFortQuestObjectiveStatEvent::Win:
+								{
+									
+								}
+								case EFortQuestObjectiveStatEvent::Emote:
+								{
+									
+								}
+								case EFortQuestObjectiveStatEvent::Kill:
+								{
+
+								}
+								case EFortQuestObjectiveStatEvent::AthenaOutlive:
+								{
+
+								}
+								case EFortQuestObjectiveStatEvent::Interact:
+								{
+									if (Target)
+									{
+										if (Target->IsA(ABuildingContainer::StaticClass()))
+										{
+											if (Condition.Num() == 0)
+											{
+												auto Container = (ABuildingContainer*)Target;
+
+												for (size_t g = 0; g < TargetTags.Num(); g++)
+												{
+													FName& TargetTag = TargetTags[g].TagName;
+
+													for (size_t b = 0; b < Container->StaticGameplayTags.GameplayTags.Num(); b++)
+													{
+														if (Container->StaticGameplayTags.GameplayTags[b].TagName.ComparisonIndex == TargetTag.ComparisonIndex)
+														{
+															CompleteQuest(Controller, QuestDefinition, Objective.BackendName);
+															break;
+														}
+													}
+												}
+											}
+										}
+									}
+									else
+									{
+										LOG("Invalid!");
+									}
+								}
+								case EFortQuestObjectiveStatEvent::PlaceTrap:
+								{
+
+								}
+								case EFortQuestObjectiveStatEvent::RevivePlayer:
+								{
+
+								}
+								case EFortQuestObjectiveStatEvent::Spray:
+								{
+
+								}
+								case EFortQuestObjectiveStatEvent::Max_None:
+									break;
+								case EFortQuestObjectiveStatEvent::EFortQuestObjectiveStatEvent_MAX:
+									break;
+								default:
+									break;
+								}
+
+							}
+						}
+					}
+				}
 			}
 		}
 	}
