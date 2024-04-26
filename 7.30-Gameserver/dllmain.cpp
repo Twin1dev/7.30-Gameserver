@@ -1,4 +1,5 @@
 #include "Includes.h"
+#include "UnrealContainers.h"
 #include "Globals.h"
 #include "Util.h"
 

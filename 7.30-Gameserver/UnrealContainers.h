@@ -1,7 +1,4 @@
 #pragma once
-#include "SDK/SDK.hpp"
-using namespace SDK;
-
 
 
 namespace UE
