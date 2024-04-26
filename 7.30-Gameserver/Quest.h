@@ -5,7 +5,7 @@
 class Quests
 {
 private:
-	static void UpdateStat(AFortPlayerControllerAthena* Controller, FName BackendName, UFortQuestItemDefinition* QuestDefinition, int CurrentStage)
+	static void UpdateStat(AFortPlayerControllerAthena* Controller, FName BackendName, UFortQuestItem* Quest, UFortQuestItemDefinition* QuestDefinition, int CurrentStage)
 	{
 		bool bFound = false;
 
@@ -15,9 +15,9 @@ private:
 			{
 				bFound = true;
 
-				auto UpdatedObjectiveStats = Controller->UpdatedObjectiveStats[i];
-				UpdatedObjectiveStats.BackendName = BackendName;
-				UpdatedObjectiveStats.Quest = QuestDefinition;
+				Controller->UpdatedObjectiveStats[i].BackendName = BackendName;
+				Controller->UpdatedObjectiveStats[i].Quest = QuestDefinition;
+				Quest->CurrentStage = CurrentStage;
 				break;
 			}
 		}
@@ -27,6 +27,7 @@ private:
 			FFortUpdatedObjectiveStat Stat{};
 			Stat.BackendName = BackendName;
 			Stat.Quest = QuestDefinition;
+			Quest->CurrentStage = CurrentStage;
 			Controller->UpdatedObjectiveStats.Add(Stat);
 		}
 		
@@ -37,6 +38,10 @@ private:
 			return;
 
 		auto Quest = Controller->GetQuestManager(ESubGame::Athena)->GetQuestWithDefinition(QuestDefinition);
+
+		Controller->GetQuestManager(ESubGame::Athena)->ClaimQuestReward(Quest);
+
+		Controller->GetQuestManager(ESubGame::Athena)->SendCustomStatEvent(QuestDefinition->PrerequisiteObjective, 1, true);
 
 		for (int i = 0; i < Quest->Objectives.Num(); i++)
 		{
@@ -49,12 +54,17 @@ private:
 
 				//Controller->GetQuestManager(ESubGame::Athena)->SendComplexCustomStatEvent(Quest, )
 
-				UpdateStat(Controller, BackendName, QuestDefinition, Objective->AchievedCount);
+				UpdateStat(Controller, BackendName, Quest, QuestDefinition, Objective->AchievedCount);
+
+				Controller->GetQuestManager(ESubGame::Athena)->SendCustomStatEvent(QuestDefinition->PrerequisiteObjective, 1, true);
 
 				if (bQuestCompleted)
 				{
 					Controller->GetQuestManager(ESubGame::Athena)->ClaimQuestReward(Quest);
 					LOG("Completed again");
+
+					Controller->GetQuestManager(ESubGame::Athena)->SendCustomStatEvent(QuestDefinition->PrerequisiteObjective, 1, true);
+
 				}
 			}
 			else
@@ -89,28 +99,41 @@ public:
 				{
 					CompleteQuest(Controller, QuestDefinition, Objective.BackendName);
 					LOG("Quest completed properly!");
-					return;
+					continue;
 				}
 
-				auto DataTable = Objective.ObjectiveStatHandle.DataTable;
+				static auto DataTable = StaticFindObject<UDataTable>("/Game/Athena/Items/Quests/AthenaObjectiveStatTable.AthenaObjectiveStatTable");
 
-				auto RowMap = *(UE::TMap<FName, FFortQuestObjectiveStatTableRow*>*)(__int64(DataTable) + 0x30);
+				if (!DataTable)
+				{
+					LOG("No DataTable");
+					continue;
+				}
+
+				auto& RowMap = *(UE::TMap<FName, FFortQuestObjectiveStatTableRow*>*)(__int64(DataTable) + 0x30);
 
 				for (int z = 0; z < RowMap.Pairs.Elements.Data.Num(); z++)
 				{
 					auto& Value = RowMap.Pairs.Elements.Data[z].ElementData.Value;
 
 					if (!Value.Second)
+					{
+						LOG("Sigmawww11");
 						continue;
+					}
+				
 
 					if (Objective.ObjectiveStatHandle.RowName.ComparisonIndex == Value.First.ComparisonIndex)
 					{
+						LOG("Sigma");
 						if (!QuestDefinition->Objectives.IsValidIndex(c - 1) || QuestManager->HasCompletedObjectiveWithName(QuestDefinition, QuestDefinition->Objectives[c - 1].BackendName))
 						{
 							auto& Condition = Value.Second->Condition;
 							auto& SourceTags = Value.Second->SourceTagContainer.GameplayTags;
 							auto& TargetTags = Value.Second->TargetTagContainer.GameplayTags;
 							auto Type = Value.Second->Type;
+
+							LOG("Sigamfafyhaf");
 
 							if (Type == StatEvent)
 							{
@@ -150,7 +173,10 @@ public:
 													{
 														if (Container->StaticGameplayTags.GameplayTags[b].TagName.ComparisonIndex == TargetTag.ComparisonIndex)
 														{
+						
 															CompleteQuest(Controller, QuestDefinition, Objective.BackendName);
+															
+															LOG("fucking retard");
 															break;
 														}
 													}

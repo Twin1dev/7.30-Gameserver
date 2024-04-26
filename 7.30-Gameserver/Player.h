@@ -80,6 +80,22 @@ namespace Player
 		}
 	}
 
+	void (*ServerAttemptInteract)(UObject* Context, UE::FFrame * Stack, void* Ret);
+	void ServerAttemptInteractHook(UObject* Context, UE::FFrame* Stack, void* Ret)
+	{
+		auto Params = (Params::AFortPlayerController_ServerAttemptInteract_Params*)Stack->Locals;
+		auto Controller = Cast<AFortPlayerControllerAthena>(Context);
+		auto Pawn = Cast<AFortPlayerPawnAthena>(Controller->Pawn);
+		auto PlayerState = Cast<AFortPlayerStateAthena>(Controller->PlayerState);
+
+		if (!Params->ReceivingActor)
+			return;
+		
+		Quests::HandleEvent(Controller, EFortQuestObjectiveStatEvent::Interact, EFortQuestObjectiveItemEvent::Max_None, Pawn, Params->ReceivingActor );
+		
+		return ServerAttemptInteract(Context, Stack, Ret);
+	}
+
 	void HookAll()
 	{
 		auto PlayerControllerDefault = AFortPlayerControllerAthena::GetDefaultObj();
@@ -87,5 +103,6 @@ namespace Player
 		VirtualHook(PlayerControllerDefault->Vft, 597, ServerLoadingScreenDroppedHook, (PVOID*)&ServerLoadingScreenDropped);
 		VirtualHook(PlayerControllerDefault->Vft, 261, ServerAcknowlegePossessionHook);
 		VirtualHook(PlayerControllerDefault->Vft, 500, ServerExecuteInventoryItemHook);
+		HookExec(StaticFindObject<UFunction>("/Script/FortniteGame.FortPlayerController.ServerAttemptInteract"), ServerAttemptInteractHook, (PVOID*)&ServerAttemptInteract);
 	}
 }

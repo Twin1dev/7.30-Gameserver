@@ -27,12 +27,12 @@ static void VirtualHook(void** vft, int idx, void* newfunc, void** OG = nullptr)
 #include "SDK/SDK.hpp"
 using namespace SDK;
 
-//static void HookExec(UFunction* Function, void* Hook, void** OG = nullptr)
-//{
-//	auto& Exec = Function->GetFunc();
-//
-//	if (OG)
-//		*OG = Exec;
-//
-//	Exec = Hook;
-//}
+static void HookExec(UFunction* Function, void* Hook, void** OG = nullptr)
+{
+	auto& Exec = Function->GetFunc();
+
+	if (OG)
+		*OG = Exec;
+
+	Exec = Hook;
+}

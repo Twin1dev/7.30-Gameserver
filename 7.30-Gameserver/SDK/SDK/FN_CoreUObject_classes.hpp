@@ -218,6 +218,8 @@ public:
 	static class UClass* StaticClass();
 	static class UFunction* GetDefaultObj();
 
+	void*& GetFunc() { return *(void**)(__int64(this) + 0xC0); }
+
 };
 
 // 0x0 (0xC8 - 0xC8)
