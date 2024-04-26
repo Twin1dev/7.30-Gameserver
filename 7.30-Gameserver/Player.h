@@ -36,6 +36,16 @@ namespace Player
 		Inventory::GivePCItem(Controller, ((AFortPlayerControllerAthena*)Controller)->CustomizationLoadout.Pickaxe->WeaponDefinition, 1);
 		Inventory::Update(Controller);
 
+		static bool bFirstPlayer = false;
+
+		if (!bFirstPlayer)
+		{
+			bFirstPlayer = true;
+
+			GameUtils::Snow::SetSnow();
+		}
+
+
 		return ServerLoadingScreenDropped(Controller);
 	}
 
@@ -54,7 +64,6 @@ namespace Player
 
 		if (!Pawn)
 			return;
-
 
 		if (auto Weapon = Cast<UFortWeaponItemDefinition>(ItemDef))
 		{

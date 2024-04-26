@@ -40,5 +40,10 @@ void TickFlushHook(UNetDriver* NetDriver)
     if (auto ReplicationDriver = NetDriver->ReplicationDriver)
         ServerReplicateActors(ReplicationDriver);
 
+    if (GetAsyncKeyState(VK_F5) & 1)
+    {
+        GameUtils::Snow::SetSnow();
+    }
+
     return TickFlush(NetDriver);
 }

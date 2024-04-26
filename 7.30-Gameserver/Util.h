@@ -96,6 +96,56 @@ namespace MemoryUtils {
 
 }
 
+
+static void LOG(std::string message)
+{
+	std::cout << "LogGameserver: " << message << "\n";
+}
+
+
+namespace GameUtils
+{
+	// this is needed!
+	class Snow
+	{
+	private:
+		static UObject* GetSnowSetup()
+		{
+			auto Class = StaticFindObject<UClass>("/Game/Athena/Environments/Landscape/Blueprints/BP_SnowSetup.BP_SnowSetup_C");
+
+			TArray<AActor*> Actors;
+			UGameplayStatics::GetDefaultObj()->GetAllActorsOfClass(UWorld::GetWorld(), Class, &Actors);
+
+			return Actors[0];
+		}
+	public:
+		static void SetSnow()
+		{
+			if (auto SnowSetup = GetSnowSetup())
+			{
+				auto SetSnow = StaticFindObject<UFunction>("/Game/Athena/Environments/Landscape/Blueprints/BP_SnowSetup.BP_SnowSetup_C.SetSnow");
+
+				if (SetSnow)
+				{
+					LOG("SetSnow called");
+
+					float ToRound = UKismetMathLibrary::GetDefaultObj()->RandomFloatInRange(0.7f, 1.0f) * 10;
+
+					float Params = UKismetMathLibrary::GetDefaultObj()->Round(ToRound) / 10;
+
+					LOG(std::format("SnowLevel: {}", Params));
+
+					SnowSetup->ProcessEvent(SetSnow, &Params);
+				}
+			}
+			else
+			{
+				LOG("No SnowSetup!");
+			}
+		}
+	};
+}
+
 static __forceinline uintptr_t BaseAddress()
 {
 	static uintptr_t BaseAddr = 0;
@@ -103,11 +153,6 @@ static __forceinline uintptr_t BaseAddress()
 	if (BaseAddr == 0) BaseAddr = reinterpret_cast<uintptr_t>(GetModuleHandle(0));
 
 	return BaseAddr;
-}
-
-static void LOG(std::string message)
-{
-	std::cout << "LogGameserver: " << message << "\n";
 }
 
 /// <summary>

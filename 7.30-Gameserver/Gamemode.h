@@ -6,6 +6,55 @@ namespace Gamemode
 	bool (*ReadyToStartMatch)(AFortGameModeAthena*);
 	bool ReadyToStartMatchHook(AFortGameModeAthena* GameMode)
 	{
+
+		static bool bShownFoundations = false;
+
+		if (!bShownFoundations)
+		{
+			bShownFoundations = true;
+			TArray<AActor*> AllBuildingFoundations;
+			UGameplayStatics::GetDefaultObj()->GetAllActorsOfClass(UWorld::GetWorld(), ABuildingFoundation::StaticClass(), &AllBuildingFoundations);
+
+			for (int i = 0; i < AllBuildingFoundations.Num(); ++i)
+			{
+				auto BuildingActor = AllBuildingFoundations[i];
+
+				if (!BuildingActor)
+				{
+					LOG("Failed to find Building Foundation!");
+					continue;
+				}
+
+				auto BuildingFoundation = (ABuildingFoundation*)BuildingActor;
+
+				if (!BuildingFoundation || BuildingFoundation->DynamicFoundationType != EDynamicFoundationType::StartDisabled || BuildingFoundation->GetName() == "SLAB_1" || BuildingFoundation->GetName() == "SLAB_3")
+					continue;
+
+				auto ShowFoundation = [](ABuildingFoundation* BuildingFoundation) -> void
+					{
+						if (!BuildingFoundation)
+						{
+							LOG("Failed to show foundation!");
+							return;
+						}
+
+						BuildingFoundation->DynamicFoundationType = EDynamicFoundationType::Static;
+						BuildingFoundation->bServerStreamedInLevel = true;
+						BuildingFoundation->OnRep_ServerStreamedInLevel();
+
+						BuildingFoundation->SetDynamicFoundationEnabled(true);
+						BuildingFoundation->ForceNetUpdate();
+						BuildingFoundation->FlushNetDormancy();
+						BuildingFoundation->OnLevelShown();
+						BuildingFoundation->OnLevelStreamedIn();
+					};
+
+				LOG(BuildingFoundation->GetName());
+				
+				ShowFoundation(BuildingFoundation);
+			}
+		}
+
 		TArray<AActor*> WarmupActors;
 		UGameplayStatics::GetDefaultObj()->GetAllActorsOfClass(UWorld::GetWorld(), AFortPlayerStartWarmup::StaticClass(), &WarmupActors);
 
@@ -71,6 +120,8 @@ namespace Gamemode
 				SetConsoleTitleA("7.30 Gameserver | Listening on Port 7777");
 			}
 
+		
+
 			GetGameMode()->bWorldIsReady = true;
 		}
 
@@ -92,6 +143,15 @@ namespace Gamemode
 	{
 		auto Transform = StartSpot->GetTransform();
 
+		static bool bFirstPlayer = false;
+
+		if (!bFirstPlayer)
+		{
+			bFirstPlayer = true;
+
+			GameUtils::Snow::SetSnow();
+		}
+
 		auto NewPawn = GameMode->SpawnDefaultPawnAtTransform(NewPlayer, Transform);
 
 		for (int i = 0; i < GetGameMode()->StartingItems.Num(); i++)
@@ -111,6 +171,13 @@ namespace Gamemode
 		return NewPawn;
 	}
 
+	static void (*HandleStartingNewPlayer)(AFortGameModeAthena*, AFortPlayerControllerAthena*);
+	void HandleStartingNewPlayerHook(AFortGameModeAthena* GameMode, AFortPlayerControllerAthena* NewPlayer)
+	{
+		return HandleStartingNewPlayer(GameMode, NewPlayer);
+	}
+
+
 	void HookAll()
 	{
 		auto GameModeDefault = StaticFindObject<AFortGameModeAthena>("/Script/FortniteGame.Default__FortGameModeAthena");
@@ -119,5 +186,6 @@ namespace Gamemode
 
 		VirtualHook(GameModeDefault->Vft, 251, ReadyToStartMatchHook, (PVOID*)&ReadyToStartMatch);
 		VirtualHook(GameModeDefault->Vft, 194, SpawnDefaultPawnForHook);
+		VirtualHook(GameModeDefault->Vft, 200, HandleStartingNewPlayerHook, (PVOID*)&HandleStartingNewPlayer);
 	}
 }
