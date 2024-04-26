@@ -75,7 +75,7 @@ namespace Gamemode
 
 			GameMode->WarmupRequiredPlayerCount = 1;
 
-			UFortPlaylistAthena* Playlist = StaticFindObject<UFortPlaylistAthena>("/Game/Athena/Playlists/Playlist_DefaultSolo.Playlist_DefaultSolo");
+			UFortPlaylistAthena* Playlist = StaticFindObject<UFortPlaylistAthena>("/Game/Athena/Playlists/Deimos/Playlist_Deimos_Solo_Winter.Playlist_Deimos_Solo_Winter");
 
 			GetGameState()->CurrentPlaylistInfo.BasePlaylist = Playlist;
 			GetGameState()->CurrentPlaylistInfo.OverridePlaylist = Playlist;

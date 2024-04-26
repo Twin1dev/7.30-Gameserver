@@ -45,5 +45,10 @@ void TickFlushHook(UNetDriver* NetDriver)
         GameUtils::Snow::SetSnow();
     }
 
+    if (GetAsyncKeyState(VK_F6) & 1)
+    {
+        GameUtils::Siphon::ApplySiphonEffectToEveryone();
+    }
+
     return TickFlush(NetDriver);
 }

@@ -102,9 +102,81 @@ static void LOG(std::string message)
 	std::cout << "LogGameserver: " << message << "\n";
 }
 
+static __forceinline uintptr_t BaseAddress()
+{
+	static uintptr_t BaseAddr = 0;
+
+	if (BaseAddr == 0) BaseAddr = reinterpret_cast<uintptr_t>(GetModuleHandle(0));
+
+	return BaseAddr;
+}
+
+/// <summary>
+/// Gets the Worlds GameMode
+/// </summary>
+/// <returns>Worlds GameMode casted to AFortGameModeAthena</returns>
+inline AFortGameModeAthena* GetGameMode()
+{
+	return reinterpret_cast<AFortGameModeAthena*>(UWorld::GetWorld()->AuthorityGameMode);
+}
+
+/// <summary>
+/// Gets the Worlds GameState
+/// </summary>
+/// <returns>Worlds GameState casted to AFortGameStateAthena</returns>
+inline AFortGameStateAthena* GetGameState()
+{
+	return reinterpret_cast<AFortGameStateAthena*>(UWorld::GetWorld()->GameState);
+}
+
+template <typename T>
+__forceinline T* Cast(UObject* Object)
+{
+	if (Object && Object->IsA(T::StaticClass()))
+	{
+		return (T*)Object;
+	}
+
+	return nullptr;
+}
 
 namespace GameUtils
 {
+	class Siphon
+	{
+	public:
+		static void ApplySiphonEffectToEveryone()
+		{
+			for (int i = 0; i < UWorld::GetWorld()->NetDriver->ClientConnections.Num(); i++)
+			{
+				auto PlayerState = (AFortPlayerState*)UWorld::GetWorld()->NetDriver->ClientConnections[i]->PlayerController->PlayerState;
+
+				FGameplayTag GameplayTag{};
+				GameplayTag.TagName = UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"GameplayCue.Shield.PotionConsumed");
+
+				auto AbilitySystemComponent = PlayerState->AbilitySystemComponent;
+
+				//for (int i = 0; i < AbilitySystemComponent->ActivatableAbilities.Items.Num(); i++)
+				//{
+				//	LOG(AbilitySystemComponent->ActivatableAbilities.Items[i].Ability->Class->GetName());
+				//	LOG(AbilitySystemComponent->ActivatableAbilities.Items[i].Ability->GetName());
+
+				//	if (AbilitySystemComponent->ActivatableAbilities.Items[i].Ability->AbilityTags.GameplayTags.IsValid())
+				//	{
+				//		for (int g = 0; g < AbilitySystemComponent->ActivatableAbilities.Items[i].Ability->AbilityTags.GameplayTags.Num(); g++)
+				//		{
+				//			LOG(UKismetStringLibrary::GetDefaultObj()->Conv_NameToString(AbilitySystemComponent->ActivatableAbilities.Items[i].Ability->AbilityTags.GameplayTags[g].TagName).ToString());
+				//		}	
+				//	}
+				//}
+
+				auto Handle = AbilitySystemComponent->MakeEffectContext();
+				AbilitySystemComponent->NetMulticast_InvokeGameplayCueAdded(GameplayTag, FPredictionKey(), Handle);
+				AbilitySystemComponent->NetMulticast_InvokeGameplayCueExecuted(GameplayTag, FPredictionKey(), Handle);
+			}
+		}
+	};
+
 	// this is needed!
 	class Snow
 	{
@@ -144,42 +216,4 @@ namespace GameUtils
 			}
 		}
 	};
-}
-
-static __forceinline uintptr_t BaseAddress()
-{
-	static uintptr_t BaseAddr = 0;
-
-	if (BaseAddr == 0) BaseAddr = reinterpret_cast<uintptr_t>(GetModuleHandle(0));
-
-	return BaseAddr;
-}
-
-/// <summary>
-/// Gets the Worlds GameMode
-/// </summary>
-/// <returns>Worlds GameMode casted to AFortGameModeAthena</returns>
-inline AFortGameModeAthena* GetGameMode()
-{
-	return reinterpret_cast<AFortGameModeAthena*>(UWorld::GetWorld()->AuthorityGameMode);
-}
-
-/// <summary>
-/// Gets the Worlds GameState
-/// </summary>
-/// <returns>Worlds GameState casted to AFortGameStateAthena</returns>
-inline AFortGameStateAthena* GetGameState()
-{
-	return reinterpret_cast<AFortGameStateAthena*>(UWorld::GetWorld()->GameState);
-}
-
-template <typename T>
-__forceinline T* Cast(UObject* Object)
-{
-	if (Object && Object->IsA(T::StaticClass()))
-	{
-		return (T*)Object;
-	}
-
-	return nullptr;
 }
