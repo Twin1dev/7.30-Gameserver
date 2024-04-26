@@ -20,6 +20,17 @@ namespace Inventory
 
 			return nullptr;
 		}
+
+		UFortWorldItem* FindItemInstanceByGUID(AFortPlayerController* PC, FGuid Guid)
+		{
+			for (int i = 0; i < PC->WorldInventory->Inventory.ItemInstances.Num(); i++)
+			{
+				if (PC->WorldInventory->Inventory.ItemInstances[i]->ItemEntry.ItemGuid == Guid)
+					return PC->WorldInventory->Inventory.ItemInstances[i];
+			}
+
+			return nullptr;
+		}
 	}
 
 

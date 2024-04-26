@@ -2,6 +2,8 @@
 
 namespace Player
 {
+	// Use AFortPlayerControllerAthena for most Functions since they made most important stuff in that class
+
 	void ServerAcknowlegePossessionHook(APlayerController* Controller, APawn* Pawn)
 	{
 		Controller->AcknowledgedPawn = Pawn;
@@ -37,12 +39,35 @@ namespace Player
 		return ServerLoadingScreenDropped(Controller);
 	}
 
+	void ServerExecuteInventoryItemHook(AFortPlayerControllerAthena* Controller, FGuid ItemGuid)
+	{
+		if (!Controller || Controller->IsInAircraft())
+			return;
+
+		auto Instance = Inventory::Finding::FindItemInstanceByGUID(Controller, ItemGuid);
+		auto ItemDef = Instance->ItemEntry.ItemDefinition;
+
+		if (!ItemDef)
+			return;
+
+		auto Pawn = Cast<AFortPlayerPawn>(Controller->Pawn);
+
+		if (!Pawn)
+			return;
+
+
+		if (auto Weapon = Cast<UFortWeaponItemDefinition>(ItemDef))
+		{
+			Pawn->EquipWeaponDefinition(Weapon, Instance->ItemEntry.ItemGuid);
+		}
+	}
+
 	void HookAll()
 	{
 		auto PlayerControllerDefault = AFortPlayerControllerAthena::GetDefaultObj();
 
 		VirtualHook(PlayerControllerDefault->Vft, 597, ServerLoadingScreenDroppedHook, (PVOID*)&ServerLoadingScreenDropped);
 		VirtualHook(PlayerControllerDefault->Vft, 261, ServerAcknowlegePossessionHook);
-
+		VirtualHook(PlayerControllerDefault->Vft, 500, ServerExecuteInventoryItemHook);
 	}
 }
