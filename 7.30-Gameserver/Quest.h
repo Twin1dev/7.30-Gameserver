@@ -118,22 +118,18 @@ public:
 
 					if (!Value.Second)
 					{
-						LOG("Sigmawww11");
 						continue;
 					}
 				
 
 					if (Objective.ObjectiveStatHandle.RowName.ComparisonIndex == Value.First.ComparisonIndex)
 					{
-						LOG("Sigma");
 						if (!QuestDefinition->Objectives.IsValidIndex(c - 1) || QuestManager->HasCompletedObjectiveWithName(QuestDefinition, QuestDefinition->Objectives[c - 1].BackendName))
 						{
 							auto& Condition = Value.Second->Condition;
 							auto& SourceTags = Value.Second->SourceTagContainer.GameplayTags;
 							auto& TargetTags = Value.Second->TargetTagContainer.GameplayTags;
 							auto Type = Value.Second->Type;
-
-							LOG("Sigamfafyhaf");
 
 							if (Type == StatEvent)
 							{
@@ -176,7 +172,7 @@ public:
 						
 															CompleteQuest(Controller, QuestDefinition, Objective.BackendName);
 															
-															LOG("fucking retard");
+															LOG("Called CompleteQuest");
 															break;
 														}
 													}

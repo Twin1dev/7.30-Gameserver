@@ -5,6 +5,8 @@
 namespace UE
 {
 
+	// Thanks to milxnor for the struct, i wouldnt know how to do this on my own.
+
 	class FOutputDevice
 	{
 	public:
@@ -12,7 +14,7 @@ namespace UE
 		bool bAutoEmitLineTerminator;
 	};
 
-	struct FFrame : public FOutputDevice // https://github.com/EpicGames/UnrealEngine/blob/7acbae1c8d1736bb5a0da4f6ed21ccb237bc8851/Engine/Source/Runtime/CoreUObject/Public/UObject/Stack.h#L83
+	struct FFrame : public FOutputDevice
 	{
 	public:
 		void** VFT;
@@ -49,7 +51,7 @@ namespace UE
 			StepOriginal(__int64(this), Context, RESULT_PARAM);
 		}
 
-		__forceinline void StepCompiledIn(void* const Result/*, const FFieldClass* ExpectedPropertyType*/, bool bPrint = false) // https://github.com/EpicGames/UnrealEngine/blob/cdaec5b33ea5d332e51eee4e4866495c90442122/Engine/Source/Runtime/CoreUObject/Public/UObject/Stack.h#L444
+		__forceinline void StepCompiledIn(void* const Result/*, const FFieldClass* ExpectedPropertyType*/, bool bPrint = false)
 		{
 			if (Code)
 			{
