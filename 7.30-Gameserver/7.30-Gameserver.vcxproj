@@ -157,6 +157,7 @@
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Net.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Quest.h" />
     <ClInclude Include="SDK\PropertyFixup.hpp" />
     <ClInclude Include="SDK\SDK.hpp" />
     <ClInclude Include="UnrealContainers.h" />

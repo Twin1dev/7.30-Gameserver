@@ -79,5 +79,8 @@
     <ClInclude Include="UnrealContainers.h">
       <Filter>SDK</Filter>
     </ClInclude>
+    <ClInclude Include="Quest.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

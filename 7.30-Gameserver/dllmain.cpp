@@ -7,6 +7,8 @@
 #include "Abilities.h"
 #include "Net.h"
 
+#include "Quest.h"
+
 #include "Gamemode.h"
 #include "Player.h"
 
