@@ -152,28 +152,11 @@ namespace GameUtils
 			{
 				auto PlayerState = (AFortPlayerState*)UWorld::GetWorld()->NetDriver->ClientConnections[i]->PlayerController->PlayerState;
 
-				FGameplayTag GameplayTag{};
-				GameplayTag.TagName = UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"GameplayCue.Shield.PotionConsumed");
-
 				auto AbilitySystemComponent = PlayerState->AbilitySystemComponent;
 
-				//for (int i = 0; i < AbilitySystemComponent->ActivatableAbilities.Items.Num(); i++)
-				//{
-				//	LOG(AbilitySystemComponent->ActivatableAbilities.Items[i].Ability->Class->GetName());
-				//	LOG(AbilitySystemComponent->ActivatableAbilities.Items[i].Ability->GetName());
-
-				//	if (AbilitySystemComponent->ActivatableAbilities.Items[i].Ability->AbilityTags.GameplayTags.IsValid())
-				//	{
-				//		for (int g = 0; g < AbilitySystemComponent->ActivatableAbilities.Items[i].Ability->AbilityTags.GameplayTags.Num(); g++)
-				//		{
-				//			LOG(UKismetStringLibrary::GetDefaultObj()->Conv_NameToString(AbilitySystemComponent->ActivatableAbilities.Items[i].Ability->AbilityTags.GameplayTags[g].TagName).ToString());
-				//		}	
-				//	}
-				//}
-
 				auto Handle = AbilitySystemComponent->MakeEffectContext();
-				AbilitySystemComponent->NetMulticast_InvokeGameplayCueAdded(GameplayTag, FPredictionKey(), Handle);
-				AbilitySystemComponent->NetMulticast_InvokeGameplayCueExecuted(GameplayTag, FPredictionKey(), Handle);
+				AbilitySystemComponent->NetMulticast_InvokeGameplayCueAdded(FGameplayTag(UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"GameplayCue.Shield.PotionConsumed")), FPredictionKey(), Handle);
+				AbilitySystemComponent->NetMulticast_InvokeGameplayCueExecuted(FGameplayTag(UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"GameplayCue.Shield.PotionConsumed")), FPredictionKey(), Handle);
 			}
 		}
 	};
@@ -188,6 +171,10 @@ namespace GameUtils
 
 			TArray<AActor*> Actors;
 			UGameplayStatics::GetDefaultObj()->GetAllActorsOfClass(UWorld::GetWorld(), Class, &Actors);
+
+			UDataTable* Table = nullptr;
+
+			
 
 			return Actors[0];
 		}
