@@ -6,6 +6,26 @@ namespace Gamemode
 	bool (*ReadyToStartMatch)(AFortGameModeAthena*);
 	bool ReadyToStartMatchHook(AFortGameModeAthena* GameMode)
 	{
+		auto ShowFoundation = [](ABuildingFoundation* BuildingFoundation) -> void
+			{
+				if (!BuildingFoundation)
+				{
+					LOG("Failed to show foundation!");
+					return;
+				}
+
+				LOG(std::format("Showing Foundation with Name: {}", BuildingFoundation->GetName()));
+
+				BuildingFoundation->DynamicFoundationType = EDynamicFoundationType::Static;
+				BuildingFoundation->bServerStreamedInLevel = true;
+				BuildingFoundation->OnRep_ServerStreamedInLevel();
+
+				BuildingFoundation->SetDynamicFoundationEnabled(true);
+				BuildingFoundation->ForceNetUpdate();
+				BuildingFoundation->FlushNetDormancy();
+				BuildingFoundation->OnLevelShown();
+				BuildingFoundation->OnLevelStreamedIn();
+			};
 
 		static bool bShownFoundations = false;
 
@@ -27,37 +47,17 @@ namespace Gamemode
 
 				auto BuildingFoundation = (ABuildingFoundation*)BuildingActor;
 
-				std::vector<std::string> FoundationsToBlock{ "SLAB_1", "SLAB_3", "SLAB_BLANK", "PleasentParkDefault" };
-
-				if (!BuildingFoundation || BuildingFoundation->DynamicFoundationType != EDynamicFoundationType::StartDisabled)
-					continue;
+				static std::vector<std::string> FoundationsToBlock{ "SLAB_1", "SLAB_3", "SLAB_BLANK", "PleasentParkDefault" };
+				bool bBlockFoundation = false;
 
 				for (const std::string& FoundationName : FoundationsToBlock)
 				{
 					if (BuildingFoundation->GetName() == FoundationName)
-						continue;
+						bBlockFoundation = true;
 				}
 
-				auto ShowFoundation = [](ABuildingFoundation* BuildingFoundation) -> void
-					{
-						if (!BuildingFoundation)
-						{
-							LOG("Failed to show foundation!");
-							return;
-						}
-
-						BuildingFoundation->DynamicFoundationType = EDynamicFoundationType::Static;
-						BuildingFoundation->bServerStreamedInLevel = true;
-						BuildingFoundation->OnRep_ServerStreamedInLevel();
-
-						BuildingFoundation->SetDynamicFoundationEnabled(true);
-						BuildingFoundation->ForceNetUpdate();
-						BuildingFoundation->FlushNetDormancy();
-						BuildingFoundation->OnLevelShown();
-						BuildingFoundation->OnLevelStreamedIn();
-					};
-
-				LOG(BuildingFoundation->GetName());
+				if (!BuildingFoundation || BuildingFoundation->DynamicFoundationType != EDynamicFoundationType::StartDisabled || bBlockFoundation)
+					continue;
 				
 				ShowFoundation(BuildingFoundation);
 			}
@@ -128,7 +128,28 @@ namespace Gamemode
 				SetConsoleTitleA("7.30 Gameserver | Listening on Port 7777");
 			}
 
+			std::vector<std::string> WorldsToStream{ "/Temp/Game/Athena/Maps/POI/Athena_POI_CommunityPark_003_77acf920", "/Temp/Game/Athena/Maps/POI/Athena_POI_CommunityPark_003_M_5c711338" };
+
 		
+			for (int i = 0; i < UObject::GObjects->Num(); i++)
+			{
+				auto Object = UObject::GObjects->GetByIndex(i);
+
+				if (!Object || !Object->IsA(ABuildingFoundation::StaticClass()))
+					continue;
+
+				auto Path = UKismetSystemLibrary::GetDefaultObj()->GetPathName(Object).ToString();
+
+				for (const std::string& WorldName : WorldsToStream)
+				{
+					if (Path.contains(WorldName))
+					{
+						ShowFoundation((ABuildingFoundation*)Object);
+						continue;
+					}
+				}
+			}
+			
 
 			GetGameMode()->bWorldIsReady = true;
 		}
