@@ -27,8 +27,16 @@ namespace Gamemode
 
 				auto BuildingFoundation = (ABuildingFoundation*)BuildingActor;
 
-				if (!BuildingFoundation || BuildingFoundation->DynamicFoundationType != EDynamicFoundationType::StartDisabled || BuildingFoundation->GetName() == "SLAB_1" || BuildingFoundation->GetName() == "SLAB_3")
+				std::vector<std::string> FoundationsToBlock{ "SLAB_1", "SLAB_3", "SLAB_BLANK", "PleasentParkDefault" };
+
+				if (!BuildingFoundation || BuildingFoundation->DynamicFoundationType != EDynamicFoundationType::StartDisabled)
 					continue;
+
+				for (const std::string& FoundationName : FoundationsToBlock)
+				{
+					if (BuildingFoundation->GetName() == FoundationName)
+						continue;
+				}
 
 				auto ShowFoundation = [](ABuildingFoundation* BuildingFoundation) -> void
 					{
