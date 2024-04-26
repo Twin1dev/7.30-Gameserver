@@ -1,7 +1,7 @@
 # 7.30 GAMESERVER
 
 ## this gameserver includes various features such as the following:
-- [ ] siphon animation
+- [x] siphon animation
 - [x] full snow map
 - [ ] quests
 - [ ] deimos zombies
