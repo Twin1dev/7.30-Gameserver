@@ -129,9 +129,9 @@ namespace GameUtils
 				{
 					LOG("SetSnow called");
 
-					float ToRound = UKismetMathLibrary::GetDefaultObj()->RandomFloatInRange(0.4f, 1.0f);
+					float ToRound = UKismetMathLibrary::GetDefaultObj()->RandomFloatInRange(0.2f, 1.0f);
 
-					float Params = round(ToRound * 10) / 10;
+					float Params = (round(ToRound * 10) / 10) + 0.05;
 
 					LOG(std::format("SnowLevel: {}", Params));
 
