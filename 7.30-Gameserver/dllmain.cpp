@@ -9,6 +9,7 @@
 
 #include "Quest.h"
 
+#include "Looting.h"    
 #include "Gamemode.h"
 #include "Player.h"
 
