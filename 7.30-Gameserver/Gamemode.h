@@ -48,6 +48,7 @@ namespace Gamemode
 				auto BuildingFoundation = (ABuildingFoundation*)BuildingActor;
 
 				static std::vector<std::string> FoundationsToBlock{ "SLAB_1", "SLAB_3", "SLAB_BLANK", "PleasentParkDefault" };
+				
 				bool bBlockFoundation = false;
 
 				for (const std::string& FoundationName : FoundationsToBlock)
@@ -96,41 +97,58 @@ namespace Gamemode
 			SetWorld = decltype(SetWorld)(BaseAddress() + 0x29cccc0);
 			InitListen = decltype(InitListen)(BaseAddress() + 0x458c90);
 
-			UWorld::GetWorld()->NetDriver = CreateNetDriver(UFortEngine::GetEngine(), UWorld::GetWorld(), UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"GameNetDriver"));
+			GetWorld()->NetDriver = CreateNetDriver(UFortEngine::GetEngine(), GetWorld(), UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"GameNetDriver"));
 
-			if (UWorld::GetWorld()->NetDriver)
+			if (GetWorld()->NetDriver)
 			{
-				UWorld::GetWorld()->NetDriver->World = UWorld::GetWorld();
-				UWorld::GetWorld()->NetDriver->NetDriverName = UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"GameNetDriver");
+				GetWorld()->NetDriver->World = GetWorld();
+				GetWorld()->NetDriver->NetDriverName = UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"GameNetDriver");
 
 				FString Err;
 				auto URL = FURL();
 				URL.Port = 7777;
 
-				InitListen(UWorld::GetWorld()->NetDriver, UWorld::GetWorld(), URL, true, Err);
-				SetWorld(UWorld::GetWorld()->NetDriver, UWorld::GetWorld());
+				InitListen(GetWorld()->NetDriver, GetWorld(), URL, true, Err);
+				SetWorld(GetWorld()->NetDriver, GetWorld());
 
-				ServerReplicateActors = decltype(ServerReplicateActors)(UWorld::GetWorld()->NetDriver->ReplicationDriver->Vft[0x56]);
+				ServerReplicateActors = decltype(ServerReplicateActors)(GetWorld()->NetDriver->ReplicationDriver->Vft[0x56]);
 
 				GameMode->GameSession->MaxPlayers = Playlist->MaxPlayers;
 				GetGameState()->AirCraftBehavior = Playlist->AirCraftBehavior;
 				GetGameState()->bIsLargeTeamGame = Playlist->bIsLargeTeamGame;
+				GetGameState()->bIsTournamentMatch = Playlist->bIsTournament;
 
-				UWorld::GetWorld()->LevelCollections[0].NetDriver = UWorld::GetWorld()->NetDriver;
-				UWorld::GetWorld()->LevelCollections[1].NetDriver = UWorld::GetWorld()->NetDriver;
+				GetWorld()->LevelCollections[0].NetDriver = GetWorld()->NetDriver;
+				GetWorld()->LevelCollections[1].NetDriver = GetWorld()->NetDriver;
 
-				if ((UWorld::GetWorld()->NetDriver->MaxInternetClientRate < UWorld::GetWorld()->NetDriver->MaxClientRate) && (UWorld::GetWorld()->NetDriver->MaxInternetClientRate > 2500))
+				if ((GetWorld()->NetDriver->MaxInternetClientRate < GetWorld()->NetDriver->MaxClientRate) && (GetWorld()->NetDriver->MaxInternetClientRate > 2500))
 				{
-					UWorld::GetWorld()->NetDriver->MaxClientRate = UWorld::GetWorld()->NetDriver->MaxInternetClientRate;
+					GetWorld()->NetDriver->MaxClientRate = GetWorld()->NetDriver->MaxInternetClientRate;
 				}
 				
 				LOG("Listening on Port 7777!");
 				SetConsoleTitleA("7.30 Gameserver | Listening on Port 7777");
 			}
 
-			std::vector<std::string> WorldsToStream{ "/Temp/Game/Athena/Maps/POI/Athena_POI_CommunityPark_003_77acf920", "/Temp/Game/Athena/Maps/POI/Athena_POI_CommunityPark_003_M_5c711338" };
+			if (GetGameState()->CurrentPlaylistInfo.BasePlaylist->AdditionalLevels.Num() > 0)
+			{
+				for (int i = 0; i < GetGameState()->CurrentPlaylistInfo.BasePlaylist->AdditionalLevels.Num(); i++)
+				{
+					auto AdditionalLevel = GetGameState()->CurrentPlaylistInfo.BasePlaylist->AdditionalLevels[i];
 
-		
+					ULevelStreamingDynamic::GetDefaultObj()->LoadLevelInstanceBySoftObjectPtr(UWorld::GetWorld(), AdditionalLevel, {}, {}, nullptr);
+
+					GetGameState()->AdditionalPlaylistLevelsStreamed.Add(AdditionalLevel.ObjectID.AssetPathName);
+
+					LOG(std::format("Loading level {}", AdditionalLevel.ObjectID.AssetPathName.ToString()));
+				}
+			}
+
+			GetGameState()->OnRep_AdditionalPlaylistLevelsStreamed();
+			GetGameState()->OnFinishedStreamingAdditionalPlaylistLevel();
+
+			std::vector<std::string> WorldsToStream { "/Temp/Game/Athena/Maps/POI/Athena_POI_CommunityPark_003_77acf920", "/Temp/Game/Athena/Maps/POI/Athena_POI_CommunityPark_003_M_5c711338" };
+
 			for (int i = 0; i < UObject::GObjects->Num(); i++)
 			{
 				auto Object = UObject::GObjects->GetByIndex(i);
@@ -150,7 +168,6 @@ namespace Gamemode
 				}
 			}
 			
-
 			GetGameMode()->bWorldIsReady = true;
 		}
 
@@ -161,7 +178,9 @@ namespace Gamemode
 			if (!bSetMapInfo)
 			{
 				bSetMapInfo = true;
-				GetGameState()->MapInfo->SupplyDropInfoList[0]->SupplyDropClass = StaticLoadObject<UClass>("/Game/Athena/SupplyDrops/AthenaSupplyDrop_Holiday.AthenaSupplyDrop_Holiday_C");
+
+				if (auto SupplyDropClass = StaticLoadObject<UClass>("/Game/Athena/SupplyDrops/AthenaSupplyDrop_Holiday.AthenaSupplyDrop_Holiday_C"))
+					GetGameState()->MapInfo->SupplyDropInfoList[0]->SupplyDropClass = SupplyDropClass;
 			}
 		}
 
@@ -203,6 +222,71 @@ namespace Gamemode
 	static void (*HandleStartingNewPlayer)(AFortGameModeAthena*, AFortPlayerControllerAthena*);
 	void HandleStartingNewPlayerHook(AFortGameModeAthena* GameMode, AFortPlayerControllerAthena* NewPlayer)
 	{
+		static bool bFirstPlayer = false;
+		static bool bEnableVendingMachines = false;
+
+		auto PlayerState = Cast<AFortPlayerStateAthena>(NewPlayer);
+
+		if (!bFirstPlayer)
+		{
+			bFirstPlayer = true;
+
+			GameUtils::Snow::SetSnow();
+
+			GetGameState()->DefaultBattleBus = StaticLoadObject<UAthenaBattleBusItemDefinition>("/Game/Athena/Items/Cosmetics/BattleBuses/BBID_WinterBus.BBID_WinterBus");
+
+			for (size_t i = 0; i < GetGameMode()->BattleBusCosmetics.Num(); i++)
+			{
+				GetGameMode()->BattleBusCosmetics[i] = GetGameState()->DefaultBattleBus;
+			}
+
+			// yes i know this is automatic but if we do this we can override the timer sooo
+
+			float AutoBusStartSeconds = 120;
+			float Duration = AutoBusStartSeconds;
+			float EarlyDuration = Duration;
+			float TimeSeconds = UGameplayStatics::GetDefaultObj()->GetTimeSeconds(UWorld::GetWorld());
+
+			GetGameState()->WarmupCountdownEndTime = TimeSeconds + Duration;
+			GameMode->WarmupCountdownDuration = Duration;
+
+			GetGameState()->WarmupCountdownStartTime = TimeSeconds;
+			GameMode->WarmupEarlyCountdownDuration = EarlyDuration;
+
+			if (bEnableVendingMachines)
+			{
+				// FillVendingMachines();
+			}
+			else
+			{
+				auto VendingMachineClass = StaticFindObject<UClass>("/Game/Athena/Items/Gameplay/VendingMachine/B_Athena_VendingMachine.B_Athena_VendingMachine_C");
+
+				TArray<AActor*> AllVendingMachines;
+				UGameplayStatics::GetDefaultObj()->GetAllActorsOfClass(UWorld::GetWorld(), VendingMachineClass, &AllVendingMachines);
+
+				for (int i = 0; i < AllVendingMachines.Num(); i++)
+				{
+					auto VendingMachine = (ABuildingItemCollectorActor*)AllVendingMachines[i];
+
+					if (!VendingMachine)
+						continue;
+
+					VendingMachine->K2_DestroyActor();
+				}
+
+				AllVendingMachines.Free();
+			}
+		}
+
+		NewPlayer->GetQuestManager(ESubGame::Athena)->bBlockStWQuestCompletion = true;
+
+		if (!NewPlayer->MatchReport)
+			NewPlayer->MatchReport = (UAthenaPlayerMatchReport*)UGameplayStatics::GetDefaultObj()->SpawnObject(UAthenaPlayerMatchReport::StaticClass(), NewPlayer);
+
+		NewPlayer->MatchReport->bHasMatchStats = true;
+		NewPlayer->MatchReport->bHasTeamStats = true;
+		NewPlayer->MatchReport->bHasRewards = true;
+
 		return HandleStartingNewPlayer(GameMode, NewPlayer);
 	}
 

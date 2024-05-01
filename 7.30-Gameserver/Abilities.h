@@ -16,7 +16,6 @@ namespace Abilities
 
 			FGameplayAbilitySpec Spec{};
 			SpecConstructor(&Spec, Ability, 1, -1, nullptr);
-
 			GiveAbility(ASC, &Spec.Handle, Spec);
 		}
 	}

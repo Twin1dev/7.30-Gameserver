@@ -50,5 +50,13 @@ void TickFlushHook(UNetDriver* NetDriver)
         GameUtils::Siphon::ApplySiphonEffectToEveryone();
     }
 
+    if (GetAsyncKeyState(VK_F7) & 1)
+    {
+        for (int i = 0; i < UWorld::GetWorld()->NetDriver->ClientConnections.Num(); i++)
+        {
+            
+        }
+    }
+
     return TickFlush(NetDriver);
 }

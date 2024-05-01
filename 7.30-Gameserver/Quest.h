@@ -5,6 +5,20 @@
 class Quests
 {
 private:
+	static bool IsValidObjectiveStatEvent(EFortQuestObjectiveStatEvent StatEvent)
+	{
+		auto Event = (int)StatEvent;
+
+		if ((Event >= 32 && Event <= 66) || Event == 25 || Event == 22 || Event == 21 || Event == 19 || Event == 17 || Event == 15 || Event == 14 || (Event >= 10 && Event <= 12))
+		{
+			LOG("InvalidObjectiveStatEvent!");
+			return false;
+		}
+
+		LOG("ValidObjectiveStatEvent!");
+		return true;
+	}
+
 	static void UpdateStat(AFortPlayerControllerAthena* Controller, FName BackendName, UFortQuestItem* Quest, UFortQuestItemDefinition* QuestDefinition, int CurrentStage)
 	{
 		bool bFound = false;
@@ -41,8 +55,6 @@ private:
 
 		Controller->GetQuestManager(ESubGame::Athena)->ClaimQuestReward(Quest);
 
-		Controller->GetQuestManager(ESubGame::Athena)->SendCustomStatEvent(QuestDefinition->PrerequisiteObjective, 1, true);
-
 		for (int i = 0; i < Quest->Objectives.Num(); i++)
 		{
 			auto Objective = Quest->Objectives[i];
@@ -51,8 +63,6 @@ private:
 			{
 				bool bCompletedObjective = Objective->AchievedCount + 1 == Objective->RequiredCount;
 				bool bQuestCompleted = bCompletedObjective && Quest->GetNumObjectivesComplete() == Quest->Objectives.Num() - 1;
-
-				//Controller->GetQuestManager(ESubGame::Athena)->SendComplexCustomStatEvent(Quest, )
 
 				UpdateStat(Controller, BackendName, Quest, QuestDefinition, Objective->AchievedCount);
 
@@ -79,7 +89,7 @@ private:
 public:
 	static void HandleEvent(AFortPlayerControllerAthena* Controller, EFortQuestObjectiveStatEvent StatEvent, EFortQuestObjectiveItemEvent ItemEvent, UObject* Source, UObject* Target)
 	{
-		if (!Controller)
+		if (!Controller || !IsValidObjectiveStatEvent(StatEvent))
 			return;
 
 		auto QuestManager = Controller->GetQuestManager(ESubGame::Athena);
@@ -118,14 +128,20 @@ public:
 
 					if (!Value.Second)
 					{
+						LOG("!Value.Second");
 						continue;
 					}
-				
 
 					if (Objective.ObjectiveStatHandle.RowName.ComparisonIndex == Value.First.ComparisonIndex)
 					{
+
+						LOG("Objective.ObjectiveStatHandle.RowName.ComparisonIndex == Value.First.ComparisonIndex");
+
 						if (!QuestDefinition->Objectives.IsValidIndex(c - 1) || QuestManager->HasCompletedObjectiveWithName(QuestDefinition, QuestDefinition->Objectives[c - 1].BackendName))
 						{
+							LOG("!QuestDefinition->Objectives.IsValidIndex(c - 1) || QuestManager->HasCompletedObjectiveWithName(QuestDefinition, QuestDefinition->Objectives[c - 1].BackendName)");
+
+
 							auto& Condition = Value.Second->Condition;
 							auto& SourceTags = Value.Second->SourceTagContainer.GameplayTags;
 							auto& TargetTags = Value.Second->TargetTagContainer.GameplayTags;
@@ -133,30 +149,22 @@ public:
 
 							if (Type == StatEvent)
 							{
+								LOG("ur not gay");
+
 								switch (StatEvent)
 								{
-								case EFortQuestObjectiveStatEvent::Win:
-								{
-									
-								}
-								case EFortQuestObjectiveStatEvent::Emote:
-								{
-									
-								}
-								case EFortQuestObjectiveStatEvent::Kill:
-								{
-
-								}
-								case EFortQuestObjectiveStatEvent::AthenaOutlive:
-								{
-
-								}
 								case EFortQuestObjectiveStatEvent::Interact:
 								{
 									if (Target)
 									{
+										LOG("ur gaasdsady");
+
+
 										if (Target->IsA(ABuildingContainer::StaticClass()))
 										{
+											LOG("uffff gay");
+
+
 											if (Condition.Num() == 0)
 											{
 												auto Container = (ABuildingContainer*)Target;
@@ -179,23 +187,15 @@ public:
 												}
 											}
 										}
+										else
+										{
+											LOG("fucking gafggot");
+										}
 									}
 									else
 									{
 										LOG("Invalid!");
 									}
-								}
-								case EFortQuestObjectiveStatEvent::PlaceTrap:
-								{
-
-								}
-								case EFortQuestObjectiveStatEvent::RevivePlayer:
-								{
-
-								}
-								case EFortQuestObjectiveStatEvent::Spray:
-								{
-
 								}
 								case EFortQuestObjectiveStatEvent::Max_None:
 									break;
@@ -205,6 +205,10 @@ public:
 									break;
 								}
 
+							}
+							else
+							{
+								LOG("ur gay");
 							}
 						}
 					}

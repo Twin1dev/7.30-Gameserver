@@ -33,7 +33,6 @@ namespace Inventory
 		}
 	}
 
-
 	static void Update(AFortPlayerController* PC, bool bMark = true)
 	{
 		// buh?
@@ -44,7 +43,6 @@ namespace Inventory
 		if (bMark)
 			PC->WorldInventory->Inventory.MarkArrayDirty();
 	}
-
 
 	static UFortWorldItem* GivePCItem(AFortPlayerController* PC, UFortItemDefinition* ItemDef, int Count, int LoadedAmmo = 0)
 	{
