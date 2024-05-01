@@ -16,6 +16,7 @@ namespace Player
 		Controller->PlayerState->ForceNetUpdate();
 		Controller->ForceNetUpdate();
 	}
+	//48 8B C4 4C 89 48 20 44 89 40 18 48 89 50 10 48 89 48 08 55 56
 
 	void (*ServerLoadingScreenDropped)(AFortPlayerControllerAthena*);
 	void ServerLoadingScreenDroppedHook(AFortPlayerControllerAthena* Controller)

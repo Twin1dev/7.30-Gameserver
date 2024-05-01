@@ -41,6 +41,9 @@
     <ClCompile Include="SDK\SDK\FN_GameplayAbilities_functions.cpp">
       <Filter>SDK\SDK</Filter>
     </ClCompile>
+    <ClCompile Include="SDK\SDK\FN_Athena_PlayerController_functions.cpp">
+      <Filter>SDK\SDK</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Includes.h">
@@ -80,6 +83,9 @@
       <Filter>SDK</Filter>
     </ClInclude>
     <ClInclude Include="Quest.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Looting.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

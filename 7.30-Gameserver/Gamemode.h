@@ -61,6 +61,16 @@ namespace Gamemode
 					continue;
 				
 				ShowFoundation(BuildingFoundation);
+
+				if (!GetGameMode()->AIDirector)
+				{
+					GetGameMode()->AIDirector = SpawnActor<AFortAIDirector>({});
+				}
+
+				if (GetGameMode()->AIDirector)
+				{
+					GetGameMode()->AIDirector->Activate();
+				}
 			}
 		}
 

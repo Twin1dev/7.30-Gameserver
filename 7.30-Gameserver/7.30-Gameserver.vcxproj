@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="SDK\SDK\FN_Athena_PlayerController_functions.cpp" />
     <ClCompile Include="SDK\SDK\FN_Basic.cpp" />
     <ClCompile Include="SDK\SDK\FN_CoreUObject_functions.cpp" />
     <ClCompile Include="SDK\SDK\FN_Engine_functions.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Hooks.h" />
     <ClInclude Include="Includes.h" />
     <ClInclude Include="Inventory.h" />
+    <ClInclude Include="Looting.h" />
     <ClInclude Include="Net.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Quest.h" />
