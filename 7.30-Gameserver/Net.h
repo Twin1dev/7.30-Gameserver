@@ -52,10 +52,7 @@ void TickFlushHook(UNetDriver* NetDriver)
 
     if (GetAsyncKeyState(VK_F7) & 1)
     {
-        for (int i = 0; i < UWorld::GetWorld()->NetDriver->ClientConnections.Num(); i++)
-        {
-            
-        }
+        UKismetSystemLibrary::GetDefaultObj()->ExecuteConsoleCommand(UWorld::GetWorld(), L"startaircraft", nullptr);
     }
 
     return TickFlush(NetDriver);

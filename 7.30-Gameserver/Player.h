@@ -92,7 +92,35 @@ namespace Player
 
 		if (Params->ReceivingActor->IsA(ABuildingContainer::StaticClass()))
 		{
-			Quests::HandleEvent(Controller, EFortQuestObjectiveStatEvent::Interact, EFortQuestObjectiveItemEvent::Max_None, Pawn, Params->ReceivingActor);
+			auto BuildingContainer = (ABuildingContainer*)Params->ReceivingActor;
+			auto Name = BuildingContainer->SearchLootTierGroup;
+
+			auto Treasure = UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"Loot_Treasure");
+			auto Ammo = UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"Loot_Ammo");
+
+			if (Name == Treasure)
+				Name = UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"Loot_AthenaTreasure");
+
+			if (Name == Ammo)
+				Name = UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"Loot_AthenaTreasure");
+
+			auto LootDrops = Looting::PickLootDrops(Name);
+
+			FVector LocationToSpawnLoot = Params->ReceivingActor->K2_GetActorLocation() + Params->ReceivingActor->GetActorRightVector() * 70.0f + FVector{ 0,0,50 };
+
+			for (auto& LootDrop : LootDrops)
+			{
+				SpawnPickup(LootDrop.ItemDefinition, LocationToSpawnLoot, LootDrop.Count/* Cast<UFortWeaponRangedItemDefinition>(LootDrop.ItemDefinition) ? GetClipSize((UFortWeaponRangedItemDefinition*)LootDrop.ItemDefinition) : 0*/);
+			}
+
+			BuildingContainer->bAlreadySearched = true;
+			BuildingContainer->SearchBounceData.SearchAnimationCount++;
+			BuildingContainer->BounceContainer();
+			BuildingContainer->OnRep_bAlreadySearched();
+
+			BuildingContainer->ForceNetUpdate(); // literally does nothing unless i call
+
+			//Quests::HandleEvent(Controller, EFortQuestObjectiveStatEvent::Interact, EFortQuestObjectiveItemEvent::Max_None, Pawn, Params->ReceivingActor);
 		}
 
 		if (auto Vehicle = Cast<AFortAthenaVehicle>(Params->ReceivingActor))
