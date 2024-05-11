@@ -237,20 +237,6 @@ inline FQuat FRotToQuat(FRotator Rot)
 	return RotationQuat;
 }
 
-template <class T>
-inline T* SpawnActor(FVector Location, FRotator Rotation = FRotator(), AActor* Owner = nullptr, UClass* Class = T::StaticClass(), ESpawnActorCollisionHandlingMethod Handle = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn)
-{
-	FTransform Transform{};
-	Transform.Scale3D = FVector{ 1,1,1 };
-	Transform.Translation = Location;
-	Transform.Rotation = FRotToQuat(Rotation);
-
-	auto Actor = UGameplayStatics::GetDefaultObj()->FinishSpawningActor(UGameplayStatics::GetDefaultObj()->BeginDeferredActorSpawnFromClass(GetWorld(), Class, Transform, Handle, Owner), Transform);
-
-	if (auto SpawnedActor = (T*)Actor)
-		return SpawnedActor;
-}
-
 static inline AFortPickupAthena* SpawnPickup(UFortItemDefinition* ItemDef, FVector Location, int Count, EFortPickupSourceTypeFlag PickupSource = EFortPickupSourceTypeFlag::Other, EFortPickupSpawnSource SpawnSource = EFortPickupSpawnSource::Unset, int LoadedAmmo = -1, AFortPawn* Pawn = nullptr)
 {
 	auto PlayerState = Pawn ? Cast<AFortPlayerState>(Pawn->PlayerState) : nullptr;
