@@ -35,6 +35,9 @@ DWORD WINAPI Main(LPVOID)
 
     InitGObjects();
 
+    StaticFindObject_ = decltype(StaticFindObject_)(__int64(GetModuleHandleW(0)) + 0x1b37670);
+    StaticLoadObject_ = decltype(StaticLoadObject_)(__int64(GetModuleHandleW(0)) + 0x1b387d0);
+
     Hooks::StartServer();
 
     return 0;

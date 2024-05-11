@@ -2,9 +2,9 @@
 
 namespace Abilities
 {
-	FGameplayAbilitySpecHandle* (*GiveAbility)(UAbilitySystemComponent*, FGameplayAbilitySpecHandle*, FGameplayAbilitySpec) = decltype(GiveAbility)(BaseAddress() + 0x68ed10);
-	inline bool (*InternalTryActivateAbility)(UAbilitySystemComponent*, FGameplayAbilitySpecHandle Handle, const FPredictionKey& InPredictionKey, UGameplayAbility** OutInstancedAbility, void* OnGameplayAbilityEndedDelegate, const FGameplayEventData* TriggerEventData) = decltype(InternalTryActivateAbility)(BaseAddress() + 0x6905a0);
-	void (*SpecConstructor)(FGameplayAbilitySpec*, UGameplayAbility*, int, int, UObject*) = decltype(SpecConstructor)(BaseAddress() + 0x6b59e0);
+	FGameplayAbilitySpecHandle* (*GiveAbility)(UAbilitySystemComponent*, FGameplayAbilitySpecHandle*, FGameplayAbilitySpec);
+	inline bool (*InternalTryActivateAbility)(UAbilitySystemComponent*, FGameplayAbilitySpecHandle Handle, const FPredictionKey& InPredictionKey, UGameplayAbility** OutInstancedAbility, void* OnGameplayAbilityEndedDelegate, const FGameplayEventData* TriggerEventData);
+	void (*SpecConstructor)(FGameplayAbilitySpec*, UGameplayAbility*, int, int, UObject*);
 
 	void ApplySetToASC(UAbilitySystemComponent* ASC)
 	{
@@ -59,6 +59,10 @@ namespace Abilities
 
 	void HookAll()
 	{
+		SpecConstructor = decltype(SpecConstructor)(BaseAddress() + 0x6b59e0);
+		GiveAbility = decltype(GiveAbility)(BaseAddress() + 0x68ed10);
+		InternalTryActivateAbility  = decltype(InternalTryActivateAbility)(BaseAddress() + 0x6905a0);
+
 		VirtualHook(UFortAbilitySystemComponentAthena::GetDefaultObj()->Vft, 0xf4, Hooks::InternalServerTryActivateAbilityHook);
 	}
 }
