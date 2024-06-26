@@ -1,5 +1,14 @@
 #pragma once
 
+struct FFrame
+{
+    char Padding[0x10];
+    UFunction* Node;
+    UObject* Object;
+    uint8* Code;
+    uint8* Locals;
+};
+
 
 inline UObject* (*StaticFindObject_)(UClass* Class, UObject* Package, const wchar_t* OrigInName, bool ExactClass);
 inline UObject* (*StaticLoadObject_)(UClass* Class, UObject* InOuter, const TCHAR* Name, const TCHAR* Filename, uint32_t LoadFlags, UObject* Sandbox, bool bAllowObjectReconciliation);

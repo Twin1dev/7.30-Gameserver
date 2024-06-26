@@ -7,8 +7,6 @@
 #include "Abilities.h"
 #include "Net.h"
 
-#include "Quest.h"
-
 #include "Looting.h"    
 #include "Gamemode.h"
 #include "Player.h"
@@ -18,7 +16,9 @@
 #define CONSOLE
 
 /*
-    all in headers for vxztys autism :blush:
+made by vxzty and twin1
+
+siphon effect btw
 */
 
 DWORD WINAPI Main(LPVOID)

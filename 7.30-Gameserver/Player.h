@@ -22,7 +22,7 @@ namespace Player
 	void ServerLoadingScreenDroppedHook(AFortPlayerControllerAthena* Controller)
 	{
 		auto Pawn = (AFortPlayerPawn*)Controller->Pawn;
-		auto PlayerState = (AFortPlayerState*)Controller->PlayerState;
+		auto PlayerState = (AFortPlayerStateAthena*)Controller->PlayerState;
 
 		if (!Pawn || GetGameState()->GamePhase == EAthenaGamePhase::Aircraft)
 			return ServerLoadingScreenDropped(Controller);
@@ -30,10 +30,6 @@ namespace Player
 		static void* (*ApplyCharacterCustomization)(AFortPlayerState* PlayerState, AFortPawn* Pawn) = decltype(ApplyCharacterCustomization)(BaseAddress() + 0x146b740);
 
 		ApplyCharacterCustomization((AFortPlayerState*)Controller->PlayerState, Pawn);
-
-		Pawn->ForceNetUpdate();
-		PlayerState->ForceNetUpdate();
-		Controller->ForceNetUpdate();
 
 		auto PickaxeDefinition = Inventory::GivePCItem(Controller, ((AFortPlayerControllerAthena*)Controller)->CustomizationLoadout.Pickaxe->WeaponDefinition, 1);
 		Inventory::Update(Controller);
@@ -79,8 +75,8 @@ namespace Player
 		}
 	}
 
-	void (*ServerAttemptInteract)(UObject* Context, UE::FFrame* Stack, void* Ret);
-	void ServerAttemptInteractHook(UObject* Context, UE::FFrame* Stack, void* Ret)
+	void (*ServerAttemptInteract)(UObject* Context, FFrame* Stack, void* Ret);
+	void ServerAttemptInteractHook(UObject* Context, FFrame* Stack, void* Ret)
 	{
 		auto Params = (Params::AFortPlayerController_ServerAttemptInteract_Params*)Stack->Locals;
 		auto Controller = Cast<AFortPlayerControllerAthena>(Context);
@@ -94,6 +90,8 @@ namespace Player
 		{
 			auto BuildingContainer = (ABuildingContainer*)Params->ReceivingActor;
 			auto Name = BuildingContainer->SearchLootTierGroup;
+
+			// TODO: put this in picklootdrops because this looks beyond sped
 
 			auto Treasure = UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"Loot_Treasure");
 			auto Ammo = UKismetStringLibrary::GetDefaultObj()->Conv_StringToName(L"Loot_Ammo");
@@ -309,9 +307,6 @@ namespace Player
 
 		CREATEHOOK(BaseAddress() + 0x17aad60, ClientOnPawnDiedHook, (PVOID*)&ClientOnPawnDied);
 
-
-
 		CREATEHOOK(BaseAddress() + 0x13b8660, ServerSendZiplineStateHook, (PVOID*)&ClientOnPawnDied);
-
 	}
 }
