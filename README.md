@@ -1,4 +1,5 @@
 # 7.30 GAMESERVER
+This has no plan to be worked on alot, but pull requests are open for people who want to add their own stuff :)
 
 ## this gameserver includes various features such as the following:
 - [x] siphon animation
