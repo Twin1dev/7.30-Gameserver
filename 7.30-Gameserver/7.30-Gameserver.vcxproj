@@ -110,8 +110,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;GAMESERVERTEMPLATE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)MinHook\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <UseFullPaths>false</UseFullPaths>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -131,6 +135,8 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)MinHook\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <UseFullPaths>false</UseFullPaths>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,28 +147,62 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Abilities.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="ErrorManager.cpp" />
+    <ClCompile Include="Gamemode.cpp" />
+    <ClCompile Include="GameUtils.cpp" />
+    <ClCompile Include="Inventory.cpp" />
+    <ClCompile Include="loguru.cpp" />
+    <ClCompile Include="Looting.cpp" />
+    <ClCompile Include="minhook\src\buffer.c" />
+    <ClCompile Include="minhook\src\hde\hde32.c" />
+    <ClCompile Include="minhook\src\hde\hde64.c" />
+    <ClCompile Include="minhook\src\hook.c" />
+    <ClCompile Include="minhook\src\trampoline.c" />
+    <ClCompile Include="Net.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Server.cpp" />
+    <ClCompile Include="Math.cpp" />
+    <ClCompile Include="Memory.cpp" />
     <ClCompile Include="SDK\SDK\FN_Athena_PlayerController_functions.cpp" />
     <ClCompile Include="SDK\SDK\FN_Basic.cpp" />
     <ClCompile Include="SDK\SDK\FN_CoreUObject_functions.cpp" />
     <ClCompile Include="SDK\SDK\FN_Engine_functions.cpp" />
     <ClCompile Include="SDK\SDK\FN_FortniteGame_functions.cpp" />
     <ClCompile Include="SDK\SDK\FN_GameplayAbilities_functions.cpp" />
+    <ClCompile Include="HookManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Abilities.h" />
+    <ClInclude Include="CustomSDK.hpp" />
+    <ClInclude Include="ErrorManager.h" />
     <ClInclude Include="Gamemode.h" />
+    <ClInclude Include="GameUtils.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Hooks.h" />
-    <ClInclude Include="Includes.h" />
+    <ClInclude Include="loguru.hpp" />
+    <ClInclude Include="minhook\include\MinHook.h" />
+    <ClInclude Include="minhook\src\buffer.h" />
+    <ClInclude Include="minhook\src\hde\hde32.h" />
+    <ClInclude Include="minhook\src\hde\hde64.h" />
+    <ClInclude Include="minhook\src\hde\pstdint.h" />
+    <ClInclude Include="minhook\src\hde\table32.h" />
+    <ClInclude Include="minhook\src\hde\table64.h" />
+    <ClInclude Include="minhook\src\trampoline.h" />
+    <ClInclude Include="Server.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Looting.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="Net.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SDK\PropertyFixup.hpp" />
     <ClInclude Include="SDK\SDK.hpp" />
     <ClInclude Include="UnrealContainers.h" />
-    <ClInclude Include="Util.h" />
+    <ClInclude Include="HookManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Memory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
