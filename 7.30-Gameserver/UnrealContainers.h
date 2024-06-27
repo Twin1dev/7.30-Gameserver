@@ -1,10 +1,11 @@
 #pragma once
-#include <cstdint>
 
 #define RESULT_DECL void*const RESULT_PARAM
 
 namespace UE
 {
+
+	
 	template <int32_t NumElements>
 	struct TInlineAllocator
 	{

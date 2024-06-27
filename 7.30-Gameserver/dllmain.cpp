@@ -1,59 +1,45 @@
-#include <Windows.h>
-#include <cstdio>
-
-#include <MinHook.h>
-#include "loguru.hpp"
-
+#include "Includes.h"
+#include "UnrealContainers.h"
 #include "Globals.h"
-#include "Server.h"
+#include "Util.h"
 
-#include "SDK/SDK.hpp"
-using namespace SDK;
+#include "Inventory.h"
+#include "Abilities.h"
+#include "Net.h"
 
-#define CONSOLE 1
+#include "Looting.h"    
+#include "Gamemode.h"
+#include "Player.h"
+
+#include "Hooks.h"
+
+#define CONSOLE
 
 /*
 made by vxzty and twin1
 
-refactor by raax
-
 siphon effect btw
 */
 
-void SetupLoguru()
-{
-    char Path[MAX_PATH] ;
-    if (GetModuleFileNameA(NULL, Path, MAX_PATH) == 0)
-    {
-        Path[0] = '\0';
-    }
-
-    int argc = 1;
-    const char* argv[] = { Path };
-
-    loguru::init(argc, const_cast<char**>(argv));
-    loguru::add_file("730_gameserver.log", loguru::Append, loguru::Verbosity_MAX);
-
-    LOG_F(INFO, "Setup loguru!");
-}
-
 DWORD WINAPI Main(LPVOID)
 {
-#if CONSOLE
+#ifdef CONSOLE
     AllocConsole();
     FILE* fptr;
     freopen_s(&fptr, "CONOUT$", "w+", stdout);
-    freopen_s(&fptr, "CONOUT$", "w+", stderr);
 
     SetConsoleTitleA("7.30 Gameserver");
 #endif
 
-    SetupLoguru();
-
     MH_Initialize();
+
     InitGObjects();
 
-    Server::StartServer();
+    StaticFindObject_ = decltype(StaticFindObject_)(__int64(GetModuleHandleW(0)) + 0x1b37670);
+    StaticLoadObject_ = decltype(StaticLoadObject_)(__int64(GetModuleHandleW(0)) + 0x1b387d0);
+
+    Hooks::StartServer();
+
     return 0;
 }
 
@@ -65,8 +51,11 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
-        CreateThread(nullptr, 0, Main, nullptr, 0, nullptr);
+        CreateThread(0, 0, Main, 0, 0, 0);
+        break;
+    case DLL_PROCESS_DETACH:
         break;
     }
     return TRUE;
 }
+
