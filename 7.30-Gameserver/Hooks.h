@@ -2,8 +2,6 @@
 #include "CustomSDK.hpp"
 using namespace SDK;
 
-extern enum ENetMode;
-
 namespace Hooks
 {
     static void KickPlayerHook(AGameSession*, AController*) { return; }

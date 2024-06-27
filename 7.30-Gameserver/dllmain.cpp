@@ -4,7 +4,6 @@
 #include <MinHook.h>
 #include "loguru.hpp"
 
-#include "Globals.h"
 #include "Server.h"
 
 #include "SDK/SDK.hpp"
@@ -22,17 +21,7 @@ siphon effect btw
 
 void SetupLoguru()
 {
-    char Path[MAX_PATH] ;
-    if (GetModuleFileNameA(NULL, Path, MAX_PATH) == 0)
-    {
-        Path[0] = '\0';
-    }
-
-    int argc = 1;
-    const char* argv[] = { Path };
-
-    loguru::init(argc, const_cast<char**>(argv));
-    loguru::add_file("730_gameserver.log", loguru::Append, loguru::Verbosity_MAX);
+    loguru::add_file("730_Gameserver.log", loguru::Append, loguru::Verbosity_MAX);
 
     LOG_F(INFO, "Setup loguru!");
 }

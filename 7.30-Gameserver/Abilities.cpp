@@ -1,10 +1,4 @@
-#include "Abilities.h"
-#include "Globals.h"
-#include "HookManager.h"
-
-#include "CustomSDK.hpp"
-#include "loguru.hpp"
-using namespace SDK;
+#include "Game.h"
 
 namespace Abilities
 {
@@ -19,7 +13,7 @@ namespace Abilities
 		for (int i = 0; i < GameplayAbilitySet->GameplayAbilities.Num(); i++)
 		{
 			UGameplayAbility* Ability = reinterpret_cast<UGameplayAbility*>(GameplayAbilitySet->GameplayAbilities[i].Get()->DefaultObject);
-			FGameplayAbilitySpec Spec{};
+			FGameplayAbilitySpec Spec = { 0 };
 			SpecConstructor(&Spec, Ability, 1, -1, nullptr);
 			GiveAbility(ASC, &Spec.Handle, Spec);
 		}
@@ -43,8 +37,8 @@ namespace Abilities
 		}
 
 		HOOK_VIRTUAL_FUNCTION(DefaultAbilityComponent->Vft, VFTIndex_InternalServerTryActivateAbility, Hooks::hAbilities::Hook_InternalServerTryActivateAbility, NULL);
-	
-		LOG_F(INFO, "Set up Abilities hooks.");
+		
+		LOG_F(INFO, "Finished setting up Abilities hooks.");
 	}
 }
 
@@ -52,33 +46,37 @@ namespace Hooks::hAbilities
 {
 	void Hook_InternalServerTryActivateAbility(UAbilitySystemComponent* AbilitySystemComponent, FGameplayAbilitySpecHandle Handle, bool InputPressed, const FPredictionKey& PredictionKey, const FGameplayEventData* TriggerEventData)
 	{
-		FGameplayAbilitySpec* Spec = nullptr;
-
+		FGameplayAbilitySpec* AbilitySpec = nullptr;
 		for (int i = 0; i < AbilitySystemComponent->ActivatableAbilities.Items.Num(); ++i)
 		{
-			auto& CurrentHandle = AbilitySystemComponent->ActivatableAbilities.Items[i].Handle;
+			FGameplayAbilitySpecHandle& CurrentHandle = AbilitySystemComponent->ActivatableAbilities.Items[i].Handle;
 
 			if (CurrentHandle.Handle == Handle.Handle)
 			{
-				Spec = &AbilitySystemComponent->ActivatableAbilities.Items[i];
+				AbilitySpec = &AbilitySystemComponent->ActivatableAbilities.Items[i];
+				break;
 			}
 		}
 
-		if (!Spec)
+		// Failed to find matching handle.
+		//
+		if (AbilitySpec == nullptr)
 		{
 			AbilitySystemComponent->ClientActivateAbilityFailed(Handle, PredictionKey.Current);
 			return;
 		}
 
-		Spec->InputPressed = true;
-
 		UGameplayAbility* InstancedAbility = nullptr;
-
-		if (!Abilities::InternalTryActivateAbility(AbilitySystemComponent, Handle, PredictionKey, &InstancedAbility, nullptr, TriggerEventData))
+		if (false == Abilities::InternalTryActivateAbility(AbilitySystemComponent, Handle, PredictionKey, &InstancedAbility, nullptr, TriggerEventData))
 		{
+			AbilitySpec->InputPressed = false;
+
 			AbilitySystemComponent->ClientActivateAbilityFailed(Handle, PredictionKey.Current);
-			Spec->InputPressed = false;
-			AbilitySystemComponent->ActivatableAbilities.MarkItemDirty(*Spec);
+			AbilitySystemComponent->ActivatableAbilities.MarkItemDirty(*AbilitySpec);
+		}
+		else
+		{
+			AbilitySpec->InputPressed = true;
 		}
 	}
 }

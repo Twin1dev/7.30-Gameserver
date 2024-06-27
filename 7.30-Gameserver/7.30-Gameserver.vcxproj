@@ -174,10 +174,9 @@
     <ClCompile Include="HookManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Abilities.h" />
     <ClInclude Include="CustomSDK.hpp" />
     <ClInclude Include="ErrorManager.h" />
-    <ClInclude Include="Gamemode.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="GameUtils.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Hooks.h" />
@@ -191,11 +190,7 @@
     <ClInclude Include="minhook\src\hde\table64.h" />
     <ClInclude Include="minhook\src\trampoline.h" />
     <ClInclude Include="Server.h" />
-    <ClInclude Include="Inventory.h" />
-    <ClInclude Include="Looting.h" />
     <ClInclude Include="Math.h" />
-    <ClInclude Include="Net.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="SDK\PropertyFixup.hpp" />
     <ClInclude Include="SDK\SDK.hpp" />
     <ClInclude Include="UnrealContainers.h" />

@@ -37,6 +37,9 @@
     <Filter Include="Libs\loguru">
       <UniqueIdentifier>{d8fd152c-ce74-4bae-b082-f6c5bda517a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{c3e0390b-9699-4811-9454-8580ffb9a96e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SDK\SDK\FN_Basic.cpp">
@@ -114,18 +117,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Player.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Gamemode.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Abilities.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Inventory.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="SDK\PropertyFixup.hpp">
       <Filter>SDK</Filter>
     </ClInclude>
@@ -134,9 +125,6 @@
     </ClInclude>
     <ClInclude Include="UnrealContainers.h">
       <Filter>SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="Looting.h">
-      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Math.h">
       <Filter>Utils</Filter>
@@ -148,9 +136,6 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Globals.h" />
-    <ClInclude Include="Net.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="loguru.hpp">
       <Filter>Libs\loguru</Filter>
     </ClInclude>
@@ -188,6 +173,9 @@
       <Filter>Libs\minhook\include</Filter>
     </ClInclude>
     <ClInclude Include="GameUtils.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,9 +1,5 @@
-#include "Looting.h"
-
-#include "loguru.hpp"
-
+#include "Game.h"
 #include "UnrealContainers.h"
-#include "CustomSDK.hpp"
 
 namespace Looting
 {

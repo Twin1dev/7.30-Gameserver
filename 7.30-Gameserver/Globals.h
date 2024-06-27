@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdio>
 
+constexpr int ServerPort = 7777;
+
 constexpr int VFTIndex_ServerLoadingScreenDropped = 597;
 constexpr int VFTIndex_ServerAcknowlegePossession = 261;
 constexpr int VFTIndex_ServerExecuteInventoryItem = 500;

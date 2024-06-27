@@ -1,12 +1,4 @@
-#include "Net.h"
-
-#include "loguru.hpp"
-
-#include "Globals.h"
-
-#include "Hooks.h"
-#include "HookManager.h"
-
+#include "Game.h"
 #include "GameUtils.h"
 
 namespace Net

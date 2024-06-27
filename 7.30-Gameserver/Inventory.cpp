@@ -1,6 +1,4 @@
-#include "Inventory.h"
-
-#include "CustomSDK.hpp"
+#include "Game.h"
 
 namespace Inventory
 {

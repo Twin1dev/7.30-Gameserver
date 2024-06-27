@@ -1,5 +1,5 @@
-#include "Player.h"
-#include "Globals.h"
+#include "Game.h"
+#include "loguru.hpp"
 
 namespace Player
 {
