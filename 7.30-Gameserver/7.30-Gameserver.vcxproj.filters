@@ -1,6 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
     <Filter Include="Server">
       <UniqueIdentifier>{d8f008a7-c5e3-46d3-8cd0-79986982b4f6}</UniqueIdentifier>
     </Filter>
@@ -13,32 +21,11 @@
     <Filter Include="SDK\SDK">
       <UniqueIdentifier>{7e456c19-d62b-440f-b8f5-2fbbd3a1ea2b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils">
-      <UniqueIdentifier>{131653db-03bd-45e6-b869-864c44859264}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Hooks">
-      <UniqueIdentifier>{778424c5-692d-49fe-9fe4-f7a322776d25}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libs">
-      <UniqueIdentifier>{76e2ac68-27c2-4a29-8abf-f4ddac51b3e6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libs\minhook">
-      <UniqueIdentifier>{21096c7b-46a7-43d9-8e1f-bc2499079f21}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libs\minhook\include">
-      <UniqueIdentifier>{b8ff3c90-e22c-4512-bdb0-18a5892641c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libs\minhook\src">
-      <UniqueIdentifier>{efe27188-8afd-486d-a855-ea6eb8dd1872}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libs\minhook\src\hde">
-      <UniqueIdentifier>{4bf95673-7fea-4f52-9494-0896bf197933}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libs\loguru">
-      <UniqueIdentifier>{d8fd152c-ce74-4bae-b082-f6c5bda517a0}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="SDK\SDK\FN_Basic.cpp">
       <Filter>SDK\SDK</Filter>
     </ClCompile>
@@ -57,65 +44,22 @@
     <ClCompile Include="SDK\SDK\FN_Athena_PlayerController_functions.cpp">
       <Filter>SDK\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Memory.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Math.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Server.cpp">
-      <Filter>Server</Filter>
-    </ClCompile>
-    <ClCompile Include="ErrorManager.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Net.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Gamemode.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Abilities.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="loguru.cpp">
-      <Filter>Libs\loguru</Filter>
-    </ClCompile>
-    <ClCompile Include="Looting.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Inventory.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="HookManager.cpp">
-      <Filter>Hooks</Filter>
-    </ClCompile>
-    <ClCompile Include="minhook\src\hook.c">
-      <Filter>Libs\minhook\src</Filter>
-    </ClCompile>
-    <ClCompile Include="minhook\src\trampoline.c">
-      <Filter>Libs\minhook\src</Filter>
-    </ClCompile>
-    <ClCompile Include="minhook\src\buffer.c">
-      <Filter>Libs\minhook\src</Filter>
-    </ClCompile>
-    <ClCompile Include="minhook\src\hde\hde64.c">
-      <Filter>Libs\minhook\src\hde</Filter>
-    </ClCompile>
-    <ClCompile Include="minhook\src\hde\hde32.c">
-      <Filter>Libs\minhook\src\hde</Filter>
-    </ClCompile>
-    <ClCompile Include="GameUtils.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Includes.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.h">
+      <Filter>Server</Filter>
+    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Hooks.h">
+      <Filter>Server</Filter>
     </ClInclude>
     <ClInclude Include="Gamemode.h">
       <Filter>Game</Filter>
@@ -132,68 +76,14 @@
     <ClInclude Include="SDK\SDK.hpp">
       <Filter>SDK</Filter>
     </ClInclude>
+    <ClInclude Include="Net.h">
+      <Filter>Server</Filter>
+    </ClInclude>
     <ClInclude Include="UnrealContainers.h">
       <Filter>SDK</Filter>
     </ClInclude>
     <ClInclude Include="Looting.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Math.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Server.h">
-      <Filter>Server</Filter>
-    </ClInclude>
-    <ClInclude Include="ErrorManager.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Globals.h" />
-    <ClInclude Include="Net.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="loguru.hpp">
-      <Filter>Libs\loguru</Filter>
-    </ClInclude>
-    <ClInclude Include="CustomSDK.hpp">
-      <Filter>SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="Hooks.h">
-      <Filter>Hooks</Filter>
-    </ClInclude>
-    <ClInclude Include="HookManager.h">
-      <Filter>Hooks</Filter>
-    </ClInclude>
-    <ClInclude Include="minhook\src\trampoline.h">
-      <Filter>Libs\minhook\src</Filter>
-    </ClInclude>
-    <ClInclude Include="minhook\src\buffer.h">
-      <Filter>Libs\minhook\src</Filter>
-    </ClInclude>
-    <ClInclude Include="minhook\src\hde\table64.h">
-      <Filter>Libs\minhook\src\hde</Filter>
-    </ClInclude>
-    <ClInclude Include="minhook\src\hde\table32.h">
-      <Filter>Libs\minhook\src\hde</Filter>
-    </ClInclude>
-    <ClInclude Include="minhook\src\hde\pstdint.h">
-      <Filter>Libs\minhook\src\hde</Filter>
-    </ClInclude>
-    <ClInclude Include="minhook\src\hde\hde64.h">
-      <Filter>Libs\minhook\src\hde</Filter>
-    </ClInclude>
-    <ClInclude Include="minhook\src\hde\hde32.h">
-      <Filter>Libs\minhook\src\hde</Filter>
-    </ClInclude>
-    <ClInclude Include="minhook\include\MinHook.h">
-      <Filter>Libs\minhook\include</Filter>
-    </ClInclude>
-    <ClInclude Include="GameUtils.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Memory.h">
-      <Filter>Utils</Filter>
-    </None>
   </ItemGroup>
 </Project>
