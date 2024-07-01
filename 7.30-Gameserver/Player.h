@@ -29,7 +29,7 @@ namespace Player
 
 		static void* (*ApplyCharacterCustomization)(AFortPlayerState* PlayerState, AFortPawn* Pawn) = decltype(ApplyCharacterCustomization)(BaseAddress() + 0x146b740);
 
-		ApplyCharacterCustomization((AFortPlayerState*)Controller->PlayerState, Pawn);
+		ApplyCharacterCustomization(PlayerState, Pawn);
 
 		auto PickaxeDefinition = Inventory::GivePCItem(Controller, ((AFortPlayerControllerAthena*)Controller)->CustomizationLoadout.Pickaxe->WeaponDefinition, 1);
 		Inventory::Update(Controller);
