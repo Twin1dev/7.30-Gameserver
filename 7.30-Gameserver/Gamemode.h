@@ -6,7 +6,7 @@ namespace Gamemode
 	bool (*ReadyToStartMatch)(AFortGameModeAthena*);
 	bool ReadyToStartMatchHook(AFortGameModeAthena* GameMode)
 	{
-		auto ShowFoundation = [](ABuildingFoundation* BuildingFoundation) -> void
+		static auto ShowFoundation = [](ABuildingFoundation* BuildingFoundation) -> void
 			{
 				if (!BuildingFoundation)
 				{
