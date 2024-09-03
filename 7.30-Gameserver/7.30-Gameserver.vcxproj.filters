@@ -21,6 +21,18 @@
     <Filter Include="SDK\SDK">
       <UniqueIdentifier>{7e456c19-d62b-440f-b8f5-2fbbd3a1ea2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Public">
+      <UniqueIdentifier>{2eb144a2-2c26-4180-b98d-46b9bcf0aa3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Private">
+      <UniqueIdentifier>{02f8f8a6-b385-4c9a-994c-890f48cf3339}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Server\Public">
+      <UniqueIdentifier>{48582a55-51ad-489d-b124-0d9225878a5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Server\Private">
+      <UniqueIdentifier>{268192f1-80a8-424b-96d9-2ba8f5ff8860}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -46,44 +58,44 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Includes.h">
-      <Filter>Server</Filter>
-    </ClInclude>
-    <ClInclude Include="Globals.h">
-      <Filter>Server</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Util.h">
-      <Filter>Server</Filter>
-    </ClInclude>
-    <ClInclude Include="Hooks.h">
-      <Filter>Server</Filter>
-    </ClInclude>
-    <ClInclude Include="Gamemode.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Abilities.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Inventory.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="SDK\PropertyFixup.hpp">
       <Filter>SDK</Filter>
     </ClInclude>
     <ClInclude Include="SDK\SDK.hpp">
       <Filter>SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Net.h">
-      <Filter>Server</Filter>
-    </ClInclude>
     <ClInclude Include="UnrealContainers.h">
       <Filter>SDK</Filter>
     </ClInclude>
+    <ClInclude Include="Abilities.h">
+      <Filter>Game\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Gamemode.h">
+      <Filter>Game\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory.h">
+      <Filter>Game\Public</Filter>
+    </ClInclude>
     <ClInclude Include="Looting.h">
-      <Filter>Game</Filter>
+      <Filter>Game\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Game\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.h">
+      <Filter>Server\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Hooks.h">
+      <Filter>Server\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes.h">
+      <Filter>Server\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Net.h">
+      <Filter>Server\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Server\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
