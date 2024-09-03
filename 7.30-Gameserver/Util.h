@@ -131,9 +131,11 @@ T* SpawnActor(FVector Location, FRotator Rotation = FRotator{ 0, 0, 0 }, UClass*
 }
 
 
-static void LOG(std::string message)
-{
-	std::cout << "LogGameserver: " << message << "\n";
+template<typename... Args>
+static inline void LOG(const std::string& message, Args... args) {
+	std::string formattedMessage = std::vformat(message, std::make_format_args(args...));
+	std::cout << "LogGameserver: ";
+	std::cout << formattedMessage << std::endl;
 }
 
 static __forceinline uintptr_t BaseAddress()
@@ -304,23 +306,32 @@ namespace GameUtils
 	private:
 		static UObject* GetSnowSetup()
 		{
-			auto Class = StaticFindObject<UClass>("/Game/Athena/Environments/Landscape/Blueprints/BP_SnowSetup.BP_SnowSetup_C");
+			static UObject* Actor = nullptr;
+			static bool bFirstFind = true;
 
-			TArray<AActor*> Actors;
-			UGameplayStatics::GetDefaultObj()->GetAllActorsOfClass(UWorld::GetWorld(), Class, &Actors);
+			if (bFirstFind)
+			{
+				bFirstFind = false;
 
-			UDataTable* Table = nullptr;
+				static auto Class = StaticFindObject<UClass>("/Game/Athena/Environments/Landscape/Blueprints/BP_SnowSetup.BP_SnowSetup_C");
 
-			
+				TArray<AActor*> Actors;
+				UGameplayStatics::GetDefaultObj()->GetAllActorsOfClass(UWorld::GetWorld(), Class, &Actors);
 
-			return Actors[0];
+				if (!Actors.IsValid() || !Actors[0])
+					return nullptr;
+
+				Actor = Actors[0];
+			}
+
+			return Actor;
 		}
 	public:
 		static void SetSnow()
 		{
 			if (auto SnowSetup = GetSnowSetup())
 			{
-				auto SetSnow = StaticFindObject<UFunction>("/Game/Athena/Environments/Landscape/Blueprints/BP_SnowSetup.BP_SnowSetup_C.SetSnow");
+				static auto SetSnow = StaticFindObject<UFunction>("/Game/Athena/Environments/Landscape/Blueprints/BP_SnowSetup.BP_SnowSetup_C.SetSnow");
 
 				if (SetSnow)
 				{
@@ -330,7 +341,7 @@ namespace GameUtils
 
 					float Params = (round(ToRound * 10) / 10) + 0.05;
 
-					LOG(std::format("SnowLevel: {}", Params));
+					LOG("SnowLevel: {}", Params);
 
 					SnowSetup->ProcessEvent(SetSnow, &Params);
 				}

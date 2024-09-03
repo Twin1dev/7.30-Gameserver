@@ -14,7 +14,7 @@ namespace Gamemode
 					return;
 				}
 
-				LOG(std::format("Showing Foundation with Name: {}", BuildingFoundation->GetName()));
+				LOG("Showing Foundation with Name: {}", BuildingFoundation->GetName());
 
 				BuildingFoundation->DynamicFoundationType = EDynamicFoundationType::Static;
 				BuildingFoundation->bServerStreamedInLevel = true;
@@ -63,7 +63,7 @@ namespace Gamemode
 				ShowFoundation(BuildingFoundation);
 			}
 
-                        if (!GetGameMode()->AIDirector)
+            if (!GetGameMode()->AIDirector)
 			{
 				GetGameMode()->AIDirector = SpawnActor<AFortAIDirector>({});
 			}
@@ -150,7 +150,7 @@ namespace Gamemode
 
 					GetGameState()->AdditionalPlaylistLevelsStreamed.Add(AdditionalLevel.ObjectID.AssetPathName);
 
-					LOG(std::format("Loading level {}", AdditionalLevel.ObjectID.AssetPathName.ToString()));
+					LOG("Loading level {}", AdditionalLevel.ObjectID.AssetPathName.ToString());
 				}
 			}
 
@@ -224,8 +224,6 @@ namespace Gamemode
 
 		Inventory::Update((AFortPlayerController*)NewPlayer);
 
-		Abilities::ApplySetToASC(((AFortPlayerState*)NewPlayer->PlayerState)->AbilitySystemComponent);
-
 		return NewPawn;
 	}
 
@@ -233,7 +231,7 @@ namespace Gamemode
 	void HandleStartingNewPlayerHook(AFortGameModeAthena* GameMode, AFortPlayerControllerAthena* NewPlayer)
 	{
 		static bool bFirstPlayer = false;
-		static bool bEnableVendingMachines = false;
+		constexpr bool bEnableVendingMachines = false;
 
 		auto PlayerState = Cast<AFortPlayerStateAthena>(NewPlayer);
 
@@ -296,6 +294,8 @@ namespace Gamemode
 		NewPlayer->MatchReport->bHasMatchStats = true;
 		NewPlayer->MatchReport->bHasTeamStats = true;
 		NewPlayer->MatchReport->bHasRewards = true;
+
+		Abilities::ApplySetToASC(((AFortPlayerState*)NewPlayer->PlayerState)->AbilitySystemComponent);
 
 		return HandleStartingNewPlayer(GameMode, NewPlayer);
 	}

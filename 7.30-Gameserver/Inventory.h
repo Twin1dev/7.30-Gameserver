@@ -12,7 +12,7 @@ namespace Inventory
 		/// <returns></returns>
 		FFortItemEntry* FindItemEntryByGUID(AFortPlayerController* PC, FGuid ItemGuid)
 		{
-			for (int i = 0; i < PC->WorldInventory->Inventory.ItemInstances.Num(); i++)
+			for (int i = 0; i < PC->WorldInventory->Inventory.ReplicatedEntries.Num(); i++)
 			{
 				if (PC->WorldInventory->Inventory.ReplicatedEntries[i].ItemGuid == ItemGuid)
 					return &PC->WorldInventory->Inventory.ReplicatedEntries[i];
